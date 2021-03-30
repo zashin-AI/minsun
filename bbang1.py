@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import matplotlib.font_manager as fm
+# 빵형 유튜브
 
 # 1. 오디오 파일 분해하고 그래프 그려서 이해해보기
 
@@ -78,22 +79,17 @@ plt.colorbar()
 plt.show()
 
 
-# DB = librosa.amplitude_to_db(librosa.stft(y[:1024]), ref=np.max)
-
- 
-# plt.plot(D.flatten())
-# plt.show()
-
-# # x축은 시간(ms)이고, y축은 DB(데시벨)단위=> 0을 최고로 설정 
-# # 1000ms = 1초
-
 ##############################################################################################################
 
 # 2. 오디오 특성 추출(Audio Feature Extraction)
 
 # tempo(BPM)
 # BPM 정보가 없을 때 librosa의 beat_track 메소드를 통해 BPM을 예측할 수 있다
+tempo, _ = librosa.beat.beat_track(y, sr=sr)
+print(tempo)
 
+
+#-----------------------------------------------------------------------------------------------------------------
 # Zero Crossing Rate
 # 음파가 양에서 음으로 또는 음에서 양으로 바뀌는 비율
 zero_crossings = librosa.zero_crossings(y, pad=False)
@@ -112,4 +108,68 @@ print(sum(zero_crossings)) #3
 plt.figure(figsize=(16,6))
 plt.plot(y[n0:n1])
 plt.grid()
+plt.show()
+
+#-----------------------------------------------------------------------------------------------------------------
+# Harmonic and Percussive Components
+# Harmonics: 사람의 귀로 구분할 수 없는 특징들 (음악의 색깔)
+# Percussives: 리듬과 감정을 나타내는 충격파
+# 음악 장르 구분
+y_harm, y_perc = librosa.effects.hpss(y)
+
+plt.figure(figsize=(16, 6))
+plt.plot(y_harm, color='b')
+plt.plot(y_perc, color='r')
+plt.show()
+
+#-----------------------------------------------------------------------------------------------------------------
+# Spectral Centroid
+# 소리를 주파수 표현했을 때, 주파수의 가중평균을 계산하여 소리의 "무게 중심"이 어딘지를 알려주는 지표 
+# 예를 들어, 블루스 음악은 무게 중심이 가운데 부분에 놓여있는 반면, 메탈 음악은 (끝 부분에서 달리기 때문에) 노래의 마지막 부분에 무게 중심이 실린다
+
+spectral_centroids = librosa.feature.spectral_centroid(y, sr=sr)[0]
+
+# Computing the time variable for visualization
+frames = range(len(spectral_centroids))
+
+# Converts frame counts to time (seconds)
+t = librosa.frames_to_time(frames)
+
+import sklearn
+def normalize(x, axis=0):
+  return sklearn.preprocessing.minmax_scale(x, axis=axis)
+
+plt.figure(figsize=(16, 6))
+librosa.display.waveplot(y, sr=sr, alpha=0.5, color='b')
+plt.plot(t, normalize(spectral_centroids), color='r') # 무게중심 표현
+plt.show()
+
+#-----------------------------------------------------------------------------------------------------------------
+# Mel-Frequency Cepstral Coefficients (MFCCs)
+# MFCCs는 특징들의 작은 집합(약 10-20)으로 스펙트럴 포곡선의 전체적인 모양을 축약하여 보여준다
+# 사람의 청각 구조를 반영하여 음성 정보 추출
+# https://tech.kakaoenterprise.com/66
+
+mfccs = librosa.feature.mfcc(y, sr=sr)
+mfccs = normalize(mfccs, axis=1)
+
+print('mean: %.2f' % mfccs.mean()) # 평균값
+print('var: %.2f' % mfccs.var()) # 분산값
+
+plt.figure(figsize=(16, 6))
+librosa.display.specshow(mfccs, sr=sr, x_axis='time')
+plt.show()
+
+#-----------------------------------------------------------------------------------------------------------------
+# Chroma Frequencies
+# chroma는 12개의 반음
+# 크로마 특징은 음악의 흥미롭고 강렬한 표현이다
+# 크로마는 인간 청각이 옥타브 차이가 나는 주파수를 가진 두 음을 유사음으로 인지한다는 음악이론에 기반한다 = 화음 잘 인식
+# 모든 스펙트럼을 12개의 Bin으로 표현한다
+# 12개의 Bin은 옥타브에서 12개의 각기 다른 반음(Semitones=Chroma)을 의미한다
+
+chromagram = librosa.feature.chroma_stft(y, sr=sr, hop_length=512)
+
+plt.figure(figsize=(16, 6))
+librosa.display.specshow(chromagram, x_axis='time', y_axis='chroma', hop_length=512)
 plt.show()
