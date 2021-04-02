@@ -155,6 +155,8 @@ mfccs = normalize(mfccs, axis=1)
 
 print('mean: %.2f' % mfccs.mean()) # 평균값
 print('var: %.2f' % mfccs.var()) # 분산값
+# mean: 0.47
+# var: 0.05
 
 plt.figure(figsize=(16, 6))
 librosa.display.specshow(mfccs, sr=sr, x_axis='time')
