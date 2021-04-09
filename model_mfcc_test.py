@@ -56,10 +56,22 @@ def build_model(input_shape, num_classes):
     inputs = Input(shape=input_shape, name="input")
 
     x = residual_block(inputs, 16, 2)
-    x = residual_block(x, 32, 2)
-    x = residual_block(x, 64, 3)
-    x = residual_block(x, 128, 3)
-    x = residual_block(x, 128, 3)
+    # x = residual_block(x, 16, 3)
+    # x = residual_block(x, 16, 3)
+    # x = residual_block(x, 32, 3)
+    # x = residual_block(x, 32, 3)
+
+    # x = residual_block(x, 32, 3)
+    # x = residual_block(x, 32, 3)   
+    # x = residual_block(x, 32, 3)
+    # x = residual_block(x, 32, 3)    
+    # x = residual_block(x, 64, 3)
+
+    # x = residual_block(x, 64, 3)
+    # x = residual_block(x, 64, 3)
+    # x = residual_block(x, 128, 3)
+    # x = residual_block(x, 128, 3)
+    # x = residual_block(x, 128, 3)
 
     x = AveragePooling1D(pool_size=3, strides=3)(x)
     x = Flatten()(x)
@@ -78,13 +90,13 @@ model.summary()
 model.compile(optimizer="Adam", loss="sparse_categorical_crossentropy", metrics=["acc"])
 stop = EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True, verbose=1)
 lr = ReduceLROnPlateau(monitor='val_loss', vactor=0.5, patience=10, verbose=1)
-mcpath = 'C:/nmb/nmb_data/h5/conv1_model_05_mfccs2.h5'
+mcpath = 'C:/nmb/nmb_data/h5/conv1_model_001_mfccs2.h5'
 mc = ModelCheckpoint(mcpath, monitor='val_loss', verbose=1, save_best_only=True)
 history = model.fit(x_train, y_train, epochs=300, batch_size=8, validation_split=0.2, callbacks=[stop, lr, mc])
 
 # --------------------------------------
 # 평가, 예측
-model.load_weights('C:/nmb/nmb_data/h5/conv1_model_05_mfccs2.h5')
+model.load_weights('C:/nmb/nmb_data/h5/conv1_model_001_mfccs2.h5')
 
 result = model.evaluate(x_test, y_test, batch_size=8)
 print('loss: ', result[0]); print('acc: ', result[1])

@@ -1,7 +1,7 @@
 # https://keras.io/examples/audio/speaker_recognition_using_cnn/
 # 참고해서 모델 만들기
 
-# MFCCs 를 거친 데이터를 인풋으로!!!
+# Mel-spectogram 을 인풋으로 함!
 
 import numpy as np
 import librosa
@@ -14,14 +14,14 @@ from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau, ModelCh
 def normalize(x, axis=0):
     return sklearn.preprocessing.minmax_scale(x, axis=axis)
 
-
 # 데이터 불러오기
-f_ds = np.load('C:/nmb/nmb_data/npy/F_test_mfccs2.npy')
-f_lb = np.load('C:/nmb/nmb_data/npy/F_test_label_mfccs2.npy')
-m_ds = np.load('C:/nmb/nmb_data/npy/M_test_mfccs2.npy')
-m_lb = np.load('C:/nmb/nmb_data/npy/M_test_label_mfccs2.npy')
-# (1073, 20, 216)
+f_ds = np.load('C:/nmb/nmb_data/npy/F_test_mels.npy')
+f_lb = np.load('C:/nmb/nmb_data/npy/F_test_label_mels.npy')
+m_ds = np.load('C:/nmb/nmb_data/npy/M_test_mels.npy')
+m_lb = np.load('C:/nmb/nmb_data/npy/M_test_label_mels.npy')
+# (1073, 128, 862)
 # (1073,)
+
 print('f_lb', f_lb)
 print('m_lb', m_lb)
 
@@ -31,7 +31,7 @@ print(x.shape)
 print(y.shape)
 
 # 전처리
-x_train, x_test, y_train, y_test = train_test_split(x, y, shuffle=True, test_size=0.2, random_state=42)
+x_train, x_test, y_train, y_test = train_test_split(x, y, shuffle=True, test_size=0.2, random_state=45)
 print(x_train.shape)
 print(x_test.shape)
 print(y_train.shape)
@@ -56,10 +56,23 @@ def build_model(input_shape, num_classes):
     inputs = Input(shape=input_shape, name="input")
 
     x = residual_block(inputs, 16, 2)
+    x = residual_block(x, 16, 2)
+    x = residual_block(x, 16, 3)
+    x = residual_block(x, 32, 3)
+    x = residual_block(x, 32, 3)
+    
     x = residual_block(x, 32, 2)
+    x = residual_block(x, 32, 2)
+    x = residual_block(x, 32, 3)
+    x = residual_block(x, 32, 3)
     x = residual_block(x, 64, 3)
+
+    x = residual_block(x, 64, 2)
+    x = residual_block(x, 64, 2)
     x = residual_block(x, 128, 3)
     x = residual_block(x, 128, 3)
+    x = residual_block(x, 128, 3)
+
 
     x = AveragePooling1D(pool_size=3, strides=3)(x)
     x = Flatten()(x)
@@ -76,17 +89,17 @@ model.summary()
 
 # 컴파일, 훈련
 model.compile(optimizer="Adam", loss="sparse_categorical_crossentropy", metrics=["acc"])
-stop = EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True, verbose=1)
-lr = ReduceLROnPlateau(monitor='val_loss', vactor=0.5, patience=10, verbose=1)
-mcpath = 'C:/nmb/nmb_data/h5/conv1_model_05_mfccs2.h5'
+stop = EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True, verbose=1)
+lr = ReduceLROnPlateau(monitor='val_loss', vactor=0.5, patience=5, verbose=1)
+mcpath = 'C:/nmb/nmb_data/h5/conv1_model_15_mels.h5'
 mc = ModelCheckpoint(mcpath, monitor='val_loss', verbose=1, save_best_only=True)
-history = model.fit(x_train, y_train, epochs=300, batch_size=8, validation_split=0.2, callbacks=[stop, lr, mc])
+history = model.fit(x_train, y_train, epochs=300, batch_size=32, validation_split=0.2, callbacks=[stop, lr, mc])
 
 # --------------------------------------
 # 평가, 예측
-model.load_weights('C:/nmb/nmb_data/h5/conv1_model_05_mfccs2.h5')
+model.load_weights('C:/nmb/nmb_data/h5/conv1_model_15_mels.h5')
 
-result = model.evaluate(x_test, y_test, batch_size=8)
+result = model.evaluate(x_test, y_test)
 print('loss: ', result[0]); print('acc: ', result[1])
 
 pred_pathAudio = 'C:/nmb/nmb_data/teamvoice_clear/'
@@ -94,25 +107,24 @@ files = librosa.util.find_files(pred_pathAudio, ext=['wav'])
 files = np.asarray(files)
 for file in files:   
     y, sr = librosa.load(file, sr=22050) 
-    # mfccs = librosa.feature.mfcc(y, sr=sr, n_mfcc=20)
-    mfccs = librosa.feature.mfcc(y, sr=sr, n_mfcc=20, n_fft=512, hop_length=128)
-    pred_mfccs = normalize(mfccs, axis=1)
-    pred_mfccs = pred_mfccs.reshape(1, pred_mfccs.shape[0], pred_mfccs.shape[1])
-    y_pred = model.predict(pred_mfccs)
+    mels = librosa.feature.melspectrogram(y, sr=sr, n_fft=512, hop_length=128)
+    pred_mels = librosa.amplitude_to_db(mels, ref=np.max)
+    pred_mels = pred_mels.reshape(1, pred_mels.shape[0], pred_mels.shape[1])
+    y_pred = model.predict(pred_mels)
+    # print(y_pred)
     y_pred_label = np.argmax(y_pred)
     if y_pred_label == 0 :
         print(file,(y_pred[0][0])*100,'%의 확률로 여자입니다.')
     else: print(file,(y_pred[0][1])*100,'%의 확률로 남자입니다.')
 
-
 # =======================================
-# 예측 결과
-# loss:  0.27188971638679504
-# acc:  0.8976744413375854
-# C:\nmb\data\teamvoice_clear\testvoice_F1(clear).wav 99.9410629272461 %의 확률로 남자입니다.
-# C:\nmb\data\teamvoice_clear\testvoice_F1_high(clear).wav 97.5982666015625 %의 확률로 남자입니다.
-# C:\nmb\data\teamvoice_clear\testvoice_F2(clear).wav 99.07631278038025 %의 확률로 여자입니다.
-# C:\nmb\data\teamvoice_clear\testvoice_F3(clear).wav 67.39769577980042 %의 확률로 여자입니다.
-# C:\nmb\data\teamvoice_clear\testvoice_M1(clear).wav 98.91903400421143 %의 확률로 남자입니다.
-# C:\nmb\data\teamvoice_clear\testvoice_M2(clear).wav 82.26792216300964 %의 확률로 남자입니다.
-# C:\nmb\data\teamvoice_clear\testvoice_M2_low(clear).wav 78.83981466293335 %의 확률로 남자입니다.
+
+# loss:  0.010632243938744068
+# acc:  0.9953488111495972
+# C:\nmb\nmb_data\teamvoice_clear\testvoice_F1(clear).wav 99.99991655349731 %의 확률로 여자입니다.
+# C:\nmb\nmb_data\teamvoice_clear\testvoice_F1_high(clear).wav 93.45743060112 %의 확률로 남자입니다.
+# C:\nmb\nmb_data\teamvoice_clear\testvoice_F2(clear).wav 99.98406171798706 %의 확률로 여자입니다.
+# C:\nmb\nmb_data\teamvoice_clear\testvoice_F3(clear).wav 99.96278285980225 %의 확률로 여자입니다.
+# C:\nmb\nmb_data\teamvoice_clear\testvoice_M1(clear).wav 99.98596906661987 %의 확률로 남자입니다.
+# C:\nmb\nmb_data\teamvoice_clear\testvoice_M2(claer).wav 99.67349171638489 %의 확률로 남자입니다.
+# C:\nmb\nmb_data\teamvoice_clear\testvoice_M2_low(claer).wav 99.99912977218628 %의 확률로 남자입니다.

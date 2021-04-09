@@ -78,13 +78,13 @@ model.summary()
 model.compile(optimizer="Adam", loss="sparse_categorical_crossentropy", metrics=["acc"])
 stop = EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True, verbose=1)
 lr = ReduceLROnPlateau(monitor='val_loss', vactor=0.5, patience=5, verbose=1)
-mcpath = 'C:/nmb/nmb_data/h5/conv1_model_01_mels.h5'
+mcpath = 'C:/nmb/nmb_data/h5/conv1_model_05_mels.h5'
 mc = ModelCheckpoint(mcpath, monitor='val_loss', verbose=1, save_best_only=True)
 history = model.fit(x_train, y_train, epochs=300, batch_size=32, validation_split=0.2, callbacks=[stop, lr, mc])
 
 # --------------------------------------
 # 평가, 예측
-model.load_weights('C:/nmb/nmb_data/h5/conv1_model_01_mels.h5')
+model.load_weights('C:/nmb/nmb_data/h5/conv1_model_05_mels.h5')
 
 result = model.evaluate(x_test, y_test)
 print('loss: ', result[0]); print('acc: ', result[1])

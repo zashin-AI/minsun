@@ -20,7 +20,8 @@ for file in files:
     length = (len(y) / sr)
     if length < 5.0 : pass
     else:
-        mfccs = librosa.feature.mfcc(y, sr=sr, n_mfcc=20)
+        # mfccs = librosa.feature.mfcc(y, sr=sr, n_mfcc=20)
+        mfccs = librosa.feature.mfcc(y, sr=sr, n_mfcc=20, n_fft=512, hop_length=128)
         mfccs = normalize(mfccs, axis=1)
         dataset.append(mfccs)
         label.append(1) # M
@@ -31,12 +32,20 @@ label = np.array(label)
 print(dataset.shape) # (545, 20, 862)
 print(label.shape) # (545,)
 
-# np.save('C:/nmb/nmb_data/npy/F_test_mfccs.npy', arr=dataset)
-# np.save('C:/nmb/nmb_data/npy/F_test_label_mfccs.npy', arr=label)
-np.save('C:/nmb/nmb_data/npy/M_test_mfccs.npy', arr=dataset)
-np.save('C:/nmb/nmb_data/npy/M_test_label_mfccs.npy', arr=label)
-# print('=====save done=====')
+# np.save('C:/nmb/nmb_data/npy/F_test_mfccs2.npy', arr=dataset)
+# np.save('C:/nmb/nmb_data/npy/F_test_label_mfccs2.npy', arr=label)
+np.save('C:/nmb/nmb_data/npy/M_test_mfccs2.npy', arr=dataset)
+np.save('C:/nmb/nmb_data/npy/M_test_label_mfccs2.npy', arr=label)
+print('=====save done=====')
 # ------------------------------------------------------
+# F_mfccs
+# (545, 20, 216)
+# (545,)
+
+# M_mfccs
+# (528, 20, 216)
+# (528,)
+
 # F_mfccs
 # (545, 20, 862)
 # (545,)
