@@ -9,8 +9,8 @@ import librosa.display
 
 dataset = []
 label = []
-# pathAudio = 'C:/nmb/nmb_data/ForM/M/'
-pathAudio = 'C:/nmb/nmb_data/ForM/F/'
+# pathAudio = 'C:/nmb/nmb_data/ForM/new_data/M/'
+pathAudio = 'C:/nmb/nmb_data/ForM/new_data/F/'
 files = librosa.util.find_files(pathAudio, ext=['flac'])
 files = np.asarray(files)
 for file in files:
