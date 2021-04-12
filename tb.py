@@ -1,5 +1,13 @@
 #tensorboard는 그래프를 넷상에서 볼 수 있게 한 것. 시각화라 성능과는 상관없음.
 
+# 에러 메세지 Duplicate plugins for name projector
+# pip uninstall tensorboard 
+# pip uninstall tb-nightly 
+# 두개 지우고
+# pip install tb-nightly 이것만 설치
+
+
+
 # # cmd -> 
 # cd \
 # cd nmb

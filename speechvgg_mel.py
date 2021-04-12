@@ -56,11 +56,11 @@ model.summary()
 start = datetime.datetime.now()
 
 # 컴파일, 훈련
-op=Adam(lr=0.0002)
+op=Adam(lr=0.001)
 model.compile(optimizer=op, loss="sparse_categorical_crossentropy", metrics=["acc"])
 stop = EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True, verbose=1)
 lr = ReduceLROnPlateau(monitor='val_loss', vactor=0.5, patience=10, verbose=1)
-mcpath = 'C:/nmb/nmb_data/h5/speechvgg_mels_2.h5'
+mcpath = 'C:/nmb/nmb_data/h5/speechvgg_mels.h5'
 mc = ModelCheckpoint(mcpath, monitor='val_loss', verbose=1, save_best_only=True, save_weights_only=True)
 tb = TensorBoard(log_dir='C:/nmb/nmb_data/graph',histogram_freq=0, write_graph=True, write_images=True)
 #log_dir='graph' ='./graph'
@@ -68,7 +68,7 @@ history = model.fit(x_train, y_train, epochs=300, batch_size=8, validation_split
 
 # --------------------------------------
 # 평가, 예측
-model.load_weights('C:/nmb/nmb_data/h5/speechvgg_mels_2.h5')
+model.load_weights('C:/nmb/nmb_data/h5/speechvgg_mels.h5')
 
 result = model.evaluate(x_test, y_test, batch_size=8)
 print('loss: ', result[0]); print('acc: ', result[1])
@@ -96,8 +96,8 @@ for file in files:
     y_pred_label = np.argmax(y_pred)
    
     if y_pred_label == 0 :
-        print(file,(y_pred[0][0])*100,'%의 확률로 여자입니다.')
-    else: print(file,(y_pred[0][1])*100,'%의 확률로 남자입니다.')
+        print(file,'여자입니다.')
+    else: print(file,'남자입니다.')
 
 
 end = datetime.datetime.now()
