@@ -6,12 +6,13 @@ from sklearn.model_selection import train_test_split
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.models import Sequential, load_model, Model
 from tensorflow.keras.layers import Dense, Conv1D, MaxPool1D, AveragePooling1D, Dropout, Activation, Flatten, Add, Input
-from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau, ModelCheckpoint
+from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau, ModelCheckpoint,TensorBoard
 from keras.models import Model
 from keras import layers
 from speech_vgg import speechVGG
-from keras.applications.vgg19 import VGG19
-
+from sklearn.metrics import accuracy_score, recall_score, precision_score
+import datetime
+from keras.optimizers import Adam, SGD
 
 # 데이터 불러오기
 
@@ -52,20 +53,36 @@ model = speechVGG(
 
 model.summary()
 
+start = datetime.datetime.now()
+
 # 컴파일, 훈련
-model.compile(optimizer="Adam", loss="sparse_categorical_crossentropy", metrics=["acc"])
+op=Adam(lr=0.0002)
+model.compile(optimizer=op, loss="sparse_categorical_crossentropy", metrics=["acc"])
 stop = EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True, verbose=1)
 lr = ReduceLROnPlateau(monitor='val_loss', vactor=0.5, patience=10, verbose=1)
-mcpath = 'C:/nmb/nmb_data/h5/speechvgg_mels.h5'
+mcpath = 'C:/nmb/nmb_data/h5/speechvgg_mels_2.h5'
 mc = ModelCheckpoint(mcpath, monitor='val_loss', verbose=1, save_best_only=True, save_weights_only=True)
-# history = model.fit(x_train, y_train, epochs=300, batch_size=8, validation_split=0.2, callbacks=[stop, lr, mc])
+tb = TensorBoard(log_dir='C:/nmb/nmb_data/graph',histogram_freq=0, write_graph=True, write_images=True)
+#log_dir='graph' ='./graph'
+history = model.fit(x_train, y_train, epochs=300, batch_size=8, validation_split=0.2, callbacks=[stop, lr, mc, tb])
 
 # --------------------------------------
 # 평가, 예측
-model.load_weights('C:/nmb/nmb_data/h5/speechvgg_mels.h5')
+model.load_weights('C:/nmb/nmb_data/h5/speechvgg_mels_2.h5')
 
 result = model.evaluate(x_test, y_test, batch_size=8)
 print('loss: ', result[0]); print('acc: ', result[1])
+
+y_pred = model.predict(x_test)
+
+# y_pred_label = np.argmax(y_pred)
+
+# accuracy = accuracy_score(y_test, y_pred)
+# recall = recall_score(y_test, y_pred)
+# precision = precision_score(y_test, y_pred)
+# print("accuracy : \t", accuracy)
+# print("recall : \t", recall)
+# print("precision : \t", precision)
 
 pred_pathAudio = 'C:/nmb/nmb_data/pred_voice/'
 files = librosa.util.find_files(pred_pathAudio, ext=['wav'])
@@ -77,9 +94,15 @@ for file in files:
     pred_mels = mels.reshape(1, 128, 862, 1)
     y_pred = model.predict(pred_mels)
     y_pred_label = np.argmax(y_pred)
+   
     if y_pred_label == 0 :
         print(file,(y_pred[0][0])*100,'%의 확률로 여자입니다.')
     else: print(file,(y_pred[0][1])*100,'%의 확률로 남자입니다.')
+
+
+end = datetime.datetime.now()
+time = end - start
+print("작업 시간 : " , time)  
 
 '''
 Model: "speech_vgg"
@@ -155,3 +178,24 @@ _________________________________________________________________
 # C:\nmb\nmb_data\pred_voice\testvoice_M1(clear).wav 51.677972078323364 %의 확률로 여자입니다.
 # C:\nmb\nmb_data\pred_voice\testvoice_M2(clear).wav 51.67800188064575 %의 확률로 여자입니다.
 # C:\nmb\nmb_data\pred_voice\testvoice_M2_low(clear).wav 51.677972078323364 %의 확률로 여자입니다.
+
+
+# adam 0.0002
+# loss:  0.08113411068916321
+# acc:  0.9603729844093323
+# C:\nmb\nmb_data\pred_voice\FY1.wav 99.9909520149231 %의 확률로 여자입니다.
+# C:\nmb\nmb_data\pred_voice\MZ1.wav 99.99592304229736 %의 확률로 여자입니다.
+# C:\nmb\nmb_data\pred_voice\friendvoice_F4.wav 99.99982118606567 %의 확률로 여자입니다.
+# C:\nmb\nmb_data\pred_voice\friendvoice_M3.wav 99.99364614486694 %의 확률로 남자입니다.
+# C:\nmb\nmb_data\pred_voice\friendvoice_M4.wav 97.05559015274048 %의 확률로 남자입니다.
+# C:\nmb\nmb_data\pred_voice\friendvoice_M5.wav 99.95635151863098 %의 확률로 남자입니다.
+# C:\nmb\nmb_data\pred_voice\friendvoice_M6.wav 98.95444512367249 %의 확률로 남자입니다.
+# C:\nmb\nmb_data\pred_voice\friendvoice_M7.wav 99.26671385765076 %의 확률로 남자입니다.
+# C:\nmb\nmb_data\pred_voice\testvoice_F1(clear).wav 99.99992847442627 %의 확률로 여자입니다.
+# C:\nmb\nmb_data\pred_voice\testvoice_F1_high(clear).wav 99.86270666122437 %의 확률로 여자입니다.
+# C:\nmb\nmb_data\pred_voice\testvoice_F2(clear).wav 99.94375109672546 %의 확률로 여자입니다.
+# C:\nmb\nmb_data\pred_voice\testvoice_F3(clear).wav 82.4866771697998 %의 확률로 남자입니다.
+# C:\nmb\nmb_data\pred_voice\testvoice_M1(clear).wav 99.7797966003418 %의 확률로 남자입니다.
+# C:\nmb\nmb_data\pred_voice\testvoice_M2(clear).wav 99.99691247940063 %의 확률로 남자입니다.
+# C:\nmb\nmb_data\pred_voice\testvoice_M2_low(clear).wav 99.98675584793091 %의 확률로 남자입니다.
+# 작업 시간 :  0:06:40.149183
