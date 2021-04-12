@@ -1,46 +1,82 @@
-# 여러개의 오디오 파일 불러오기 
-# 불러와서 Mel Spectogram 적용 
+
+# data load
 
 import librosa
 import numpy as np
 import sklearn
 import matplotlib.pyplot as plt
 import librosa.display
+import gzip
+import os
+
+
 
 dataset = []
 label = []
-# pathAudio = 'C:/nmb/nmb_data/ForM/new_data/M/'
-pathAudio = 'C:/nmb/nmb_data/ForM/new_data/F/'
-files = librosa.util.find_files(pathAudio, ext=['flac'])
-files = np.asarray(files)
-for file in files:
-    y, sr = librosa.load(file, sr=22050, duration=5.0)
-    length = (len(y) / sr)
-    if length < 5.0 : pass
-    else:
-        mels = librosa.feature.melspectrogram(y, sr=sr, n_fft=512, hop_length=128, n_mels=128)
-        mels = librosa.amplitude_to_db(mels, ref=np.max)
-        dataset.append(mels)
-        # label.append(1) # M
-        label.append(0) # F
+pathAudio_F = 'C:\\nmb\\nmb_data\\brandnew_data\\F\\'
+pathAudio_M = 'C:\\nmb\\nmb_data\\brandnew_data\\M\\'
 
-dataset = np.array(dataset)
-label = np.array(label)
-print(dataset.shape) # (545, 128, 862)
-print(label.shape) # (545,)
+files_F = librosa.util.find_files(pathAudio_F, ext=['flac','wav'])
+files_M = librosa.util.find_files(pathAudio_M, ext=['flac','wav'])
 
-# np.save('C:/nmb/nmb_data/npy/M_test_mels.npy', arr=dataset)
-# np.save('C:/nmb/nmb_data/npy/M_test_label_mels.npy', arr=label)
-np.save('C:/nmb/nmb_data/npy/F_test_mels.npy', arr=dataset)
-np.save('C:/nmb/nmb_data/npy/F_test_label_mels.npy', arr=label)
-print('=====save done=====')
+files_F = np.array(files_F)
+files_M = np.asarray(files_M)
+
+print(files_F.shape)    # (1200,)
+print(files_M.shape)    # (1200,)
+
+total = [files_F, files_M]
+index = 0               # index 0 : 여성, 1 : 남성
+
+for folder in total : 
+    print(f"===={index}=====")
+    dataset = []
+    label = []
+    for file in folder:
+        y, sr = librosa.load(file, sr=22050, duration=5.0)
+        length = (len(y) / sr)
+        if length < 5.0 : pass
+        else:
+            mels = librosa.feature.melspectrogram(y, sr=sr, n_fft=512, hop_length=128, n_mels=128)
+            mels = librosa.amplitude_to_db(mels, ref=np.max)
+            # plt.figure(figsize=(10,4))
+            # plt.title('mel spectrogram')
+            # librosa.display.specshow(mels, sr=sr, x_axis='time')
+            # plt.colorbar()
+            # plt.show()
+
+            dataset.append(mels)
+            label.append(index)
+    
+    dataset = np.array(dataset)
+    label = np.array(label)
+    print(dataset.shape)    
+    print(label.shape)      
+
+    np.save(f'C:\\nmb\\nmb_data\\npy\\brandnew_{index}_mels.npy', arr=dataset)
+    print("dataset save")
+    np.save(f'C:\\nmb\\nmb_data\\npy\\brandnew_{index}_mels_label.npy', arr=label)
+    print("label save")
+
+    index += 1 
+
+
+print('=====save done=====') 
+# ------------------------------------------------------
+
+# ====0=====
+# (1104, 128, 862)
+# (1104,)
+# dataset save
+# label save
+# ====1=====
+# (1037, 128, 862)
+# (1037,)
+# dataset save
 
 # ------------------------------------------------------
 
-# F_mels
-# (545, 128, 862)
-# (545,)
-
-# M_mels
-# (528, 128, 862)
-# (528,)
+F = np.load('C:\\nmb\\nmb_data\\npy\\brandnew_0_mels.npy')
+print(F.shape)  # (1104, 128, 862)
+M = np.load('C:\\nmb\\nmb_data\\npy\\brandnew_1_mels.npy')
+print(M.shape)  # (1037, 128, 862)
