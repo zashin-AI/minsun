@@ -42,8 +42,9 @@ print(y_test.shape) #(429,)
 
 x_train = x_train.reshape(1712,128,862,1)
 x_test = x_test.reshape(429,128,862,1)
-
-def modeling(optimizers, learning_rate):
+'''
+# 베스트 파라미터 찾기
+def modeling(optimizer='adam', learning_rate=0.1):
     model = speechVGG(
                 include_top=True,
                 input_shape=(128,862,1),
@@ -54,46 +55,54 @@ def modeling(optimizers, learning_rate):
             )
 
     model.summary()
-    model.compile(optimizer=optimizers, loss="sparse_categorical_crossentropy", metrics=["acc"])
+    model.compile(optimizer=optimizer, loss="sparse_categorical_crossentropy", metrics=["acc"])
     return model
 
-start = datetime.datetime.now()
-
-
-def create_hyperparameters():
-    optimizers = ['adam','sgd', 'adadelta','rmsprop']
-    learning_rate = [0.1,0.01,0.001,0.0001,0.00001]
-    return('optimizer' : optimizers, 'lr':learning_rate)}
-hyperparameters = create_hyperparameters()
-
-
-#######################################################################
 from tensorflow.keras.wrappers.scikit_learn import KerasClassifier
-model2 = KerasClassifier(build_fn=speechVGG, verbose=1)
-################ 함수형 모델을 랩핑해야한다. #############################
-
+model2 = KerasClassifier(build_fn=modeling, verbose=1)
+parameters = {'optimizer' :  ['adam','sgd', 'adadelta','rmsprop'],
+              'learning_rate' : [0.1,0.01,0.001,0.0001,0.00001]}
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
-# search = RandomizedSearchCV(model2,hyperparameters,cv=3)
-search = GridSearchCV(model2,hyperparameters,cv=3)
+# search = RandomizedSearchCV(model2,parameters,cv=3)
+search = GridSearchCV(model2,parameters,cv=3)
+
+# search.fit(x,y)
+# {'optimizer': 'sgd', 'learning_rate': 0.001}
+search.fit(x_train,y_train)
+# {'learning_rate': 1e-05, 'optimizer': 'adadelta'}
+
 print(search.best_params_) # 내가 선택한 파라미터 중 제일 좋은 것
 print(search.best_estimator_) # 전체 추정기 중에서 가장 좋은 것
-
-
 '''
+
+model = speechVGG(
+    include_top=True,
+    input_shape=(128,862,1),
+    classes=2,
+    pooling=None,
+    weights=None,
+    transfer_learning=True
+)
+
+model.summary()
+
+
+start = datetime.datetime.now()
+now = datetime.now()
+
 # 컴파일, 훈련
-op=Adam(lr=0.0005)
+op=Adam(lr=1e-4)
 model.compile(optimizer=op, loss="sparse_categorical_crossentropy", metrics=["acc"])
 stop = EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True, verbose=1)
 lr = ReduceLROnPlateau(monitor='val_loss', vactor=0.5, patience=10, verbose=1)
-mcpath = 'C:/nmb/nmb_data/h5/speechvgg_mels_3.h5'
+mcpath = 'C:/nmb/nmb_data/h5/speechvgg_mels_2.h5'
 mc = ModelCheckpoint(mcpath, monitor='val_loss', verbose=1, save_best_only=True, save_weights_only=True)
-tb = TensorBoard(log_dir='C:/nmb/nmb_data/graph/mel_adam_3',histogram_freq=0, write_graph=True, write_images=True)
-#log_dir='graph' ='./graph'
+tb = TensorBoard(log_dir='C:/nmb/nmb_data/graph/mel_adam'+ now.strftime("%Y%m%d-%H%M%S") + "/",histogram_freq=0, write_graph=True, write_images=True)
 history = model.fit(x_train, y_train, epochs=300, batch_size=8, validation_split=0.2, callbacks=[stop, lr, mc, tb])
 
 # --------------------------------------
 # 평가, 예측
-model.load_weights('C:/nmb/nmb_data/h5/speechvgg_mels_3.h5')
+model.load_weights('C:/nmb/nmb_data/h5/speechvgg_mels_2.h5')
 
 result = model.evaluate(x_test, y_test, batch_size=8)
 print('loss: ', result[0]); print('acc: ', result[1])
@@ -121,15 +130,15 @@ for file in files:
     y_pred_label = np.argmax(y_pred)
    
     if y_pred_label == 0 :
-        print(file,'여자입니다.')
-    else: print(file,'남자입니다.')
+        print(file,(y_pred[0][0])*100,'%의 확률로 여자입니다.')
+    else: print(file,(y_pred[0][1])*100,'%의 확률로 남자입니다.')
 
 
 end = datetime.datetime.now()
 time = end - start
 print("작업 시간 : " , time)  
 
-'''
+
 '''
 Model: "speech_vgg"
 _________________________________________________________________
