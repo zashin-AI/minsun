@@ -3,10 +3,10 @@ import os
 
 print(os.getcwd())  
 
-if not os.path.isdir("splitaudio1(소아암)"):
-    os.mkdir("splitaudio1(소아암)")
+if not os.path.isdir("girl"):
+    os.mkdir("girl")
 
-audio = AudioSegment.from_file("C:\\nmb\\nmb_data\\youtube\\audio.wav")
+audio = AudioSegment.from_file("C:\\nmb\\nmb_data\\youtube\\girl_audio.wav")
 lengthaudio = len(audio)
 print("Length of Audio File", lengthaudio)
 

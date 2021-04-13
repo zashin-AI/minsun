@@ -63,18 +63,18 @@ start = datetime.now()
 
 
 # 컴파일, 훈련
-op=Adam(lr=1e-2)
+op=RMSprop(lr=1e-4)
 model.compile(optimizer=op, loss="sparse_categorical_crossentropy", metrics=["acc"])
 stop = EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True, verbose=1)
 lr = ReduceLROnPlateau(monitor='val_loss', vactor=0.5, patience=10, verbose=1)
-mcpath = 'C:/nmb/nmb_data/h5/speechvgg_mfcc_adam.h5'
+mcpath = 'C:/nmb/nmb_data/h5/speechvgg_mfcc_rms3.h5'
 mc = ModelCheckpoint(mcpath, monitor='val_loss', verbose=1, save_best_only=True, save_weights_only=True)
 tb = TensorBoard(log_dir='C:/nmb/nmb_data/graph/'+ start.strftime("%Y%m%d-%H%M%S") + "/",histogram_freq=0, write_graph=True, write_images=True)
 history = model.fit(x_train, y_train, epochs=300, batch_size=8, validation_split=0.2, callbacks=[stop, lr, mc, tb])
 
 # --------------------------------------
 # 평가, 예측
-model.load_weights('C:/nmb/nmb_data/h5/speechvgg_mfcc_adam.h5')
+model.load_weights('C:/nmb/nmb_data/h5/speechvgg_mfcc_rms3.h5')
 
 result = model.evaluate(x_test, y_test, batch_size=8)
 print('loss: ', result[0]); print('acc: ', result[1])
