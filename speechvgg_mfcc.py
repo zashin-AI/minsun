@@ -6,11 +6,14 @@ from sklearn.model_selection import train_test_split
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.models import Sequential, load_model, Model
 from tensorflow.keras.layers import Dense, Conv1D, MaxPool1D, AveragePooling1D, Dropout, Activation, Flatten, Add, Input
-from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau, ModelCheckpoint
+from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau, ModelCheckpoint, TensorBoard
 from keras.models import Model
 from keras import layers
 from speech_vgg import speechVGG
-from keras.applications.vgg19 import VGG19
+from sklearn.metrics import accuracy_score, recall_score, precision_score
+from datetime import datetime
+from keras.optimizers import Adam, SGD, RMSprop, Adadelta, Nadam
+
 
 
 def normalize(x, axis=0):
@@ -53,21 +56,25 @@ model = speechVGG(
             weights=None,
             transfer_learning=True
         )
-model.trainable = False
-# model = VGG19(input_shape=(40,431,1), include_top=False, classes=2)
+# model.trainable = False
 model.summary()
 
+start = datetime.now()
+
+
 # 컴파일, 훈련
-model.compile(optimizer="Adam", loss="sparse_categorical_crossentropy", metrics=["acc"])
+op=Adam(lr=1e-2)
+model.compile(optimizer=op, loss="sparse_categorical_crossentropy", metrics=["acc"])
 stop = EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True, verbose=1)
 lr = ReduceLROnPlateau(monitor='val_loss', vactor=0.5, patience=10, verbose=1)
-mcpath = 'C:/nmb/nmb_data/h5/speechvgg_mfccs_40.h5'
+mcpath = 'C:/nmb/nmb_data/h5/speechvgg_mfcc_adam.h5'
 mc = ModelCheckpoint(mcpath, monitor='val_loss', verbose=1, save_best_only=True, save_weights_only=True)
-# history = model.fit(x_train, y_train, epochs=300, batch_size=8, validation_split=0.2, callbacks=[stop, lr, mc])
+tb = TensorBoard(log_dir='C:/nmb/nmb_data/graph/'+ start.strftime("%Y%m%d-%H%M%S") + "/",histogram_freq=0, write_graph=True, write_images=True)
+history = model.fit(x_train, y_train, epochs=300, batch_size=8, validation_split=0.2, callbacks=[stop, lr, mc, tb])
 
 # --------------------------------------
 # 평가, 예측
-model.load_weights('C:/nmb/nmb_data/h5/speechvgg_mfccs_40.h5')
+model.load_weights('C:/nmb/nmb_data/h5/speechvgg_mfcc_adam.h5')
 
 result = model.evaluate(x_test, y_test, batch_size=8)
 print('loss: ', result[0]); print('acc: ', result[1])
@@ -87,7 +94,9 @@ for file in files:
         print(file,(y_pred[0][0])*100,'%의 확률로 여자입니다.')
     else: print(file,(y_pred[0][1])*100,'%의 확률로 남자입니다.')
 
-
+end = datetime.now()
+time = end - start
+print("작업 시간 : " , time)  
 # =======================================
 '''
 Model: "speech_vgg"
@@ -145,21 +154,3 @@ Trainable params: 0
 Non-trainable params: 18,187,970
 _________________________________________________________________
  '''
-
-# loss:  0.6931481957435608
-# acc:  0.5221444964408875
-# C:\nmb\nmb_data\pred_voice\FY1.wav 50.004273653030396 %의 확률로 여자입니다.
-# C:\nmb\nmb_data\pred_voice\MZ1.wav 50.00525116920471 %의 확률로 여자입니다.
-# C:\nmb\nmb_data\pred_voice\friendvoice_F4.wav 50.005316734313965 %의 확률로 여자입니다.
-# C:\nmb\nmb_data\pred_voice\friendvoice_M3.wav 50.00661015510559 %의 확률로 여자입니다.
-# C:\nmb\nmb_data\pred_voice\friendvoice_M4.wav 50.00622272491455 %의 확률로 여자입니다.
-# C:\nmb\nmb_data\pred_voice\friendvoice_M5.wav 50.007039308547974 %의 확률로 여자입니다.
-# C:\nmb\nmb_data\pred_voice\friendvoice_M6.wav 50.00602602958679 %의 확률로 여자입니다.
-# C:\nmb\nmb_data\pred_voice\friendvoice_M7.wav 50.00689625740051 %의 확률로 여자입니다.
-# C:\nmb\nmb_data\pred_voice\testvoice_F1(clear).wav 50.006675720214844 %의 확률로 여자입니다.
-# C:\nmb\nmb_data\pred_voice\testvoice_F1_high(clear).wav 50.007081031799316 %의 확률로 여자입니다.
-# C:\nmb\nmb_data\pred_voice\testvoice_F2(clear).wav 50.006985664367676 %의 확률로 여자입니다.
-# C:\nmb\nmb_data\pred_voice\testvoice_F3(clear).wav 50.00585317611694 %의 확률로 여자입니다.
-# C:\nmb\nmb_data\pred_voice\testvoice_M1(clear).wav 50.00694394111633 %의 확률로 여자입니다.
-# C:\nmb\nmb_data\pred_voice\testvoice_M2(clear).wav 50.00590682029724 %의 확률로 여자입니다.
-# C:\nmb\nmb_data\pred_voice\testvoice_M2_low(clear).wav 50.007349252700806 %의 확률로 여자입니다.
