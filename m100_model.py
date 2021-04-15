@@ -16,13 +16,12 @@ from datetime import datetime
 from keras.optimizers import Adam, SGD, RMSprop, Adadelta, Nadam
 from keras import backend as K
 
-
 # 데이터 불러오기
 
-f_ds = np.load('C:\\nmb\\nmb_data\\npy\\brandnew_0_mels.npy')
-f_lb = np.load('C:\\nmb\\nmb_data\\npy\\brandnew_0_mels_label.npy')
-m_ds = np.load('C:\\nmb\\nmb_data\\npy\\brandnew_1_mels.npy')
-m_lb = np.load('C:\\nmb\\nmb_data\\npy\\brandnew_1_mels_label.npy')
+f_ds = np.load('C:\\nmb\\nmb_data\\npy\\M100_0_mels.npy')
+f_lb = np.load('C:\\nmb\\nmb_data\\npy\\M100_0_mels_label.npy')
+m_ds = np.load('C:\\nmb\\nmb_data\\npy\\M100_1_mels.npy')
+m_lb = np.load('C:\\nmb\\nmb_data\\npy\\M100_1_mels_label.npy')
 # (1073, 20, 216)
 # (1073,)
 print('f_lb', f_lb)
@@ -32,18 +31,18 @@ x = np.concatenate([f_ds, m_ds], 0)
 y = np.concatenate([f_lb, m_lb], 0)
 print(x.shape)
 print(y.shape)
-# (2141, 20, 862)
-# (2141,)
+# (1173, 128, 862)
+# (1173,)
 
 # 전처리
 x_train, x_test, y_train, y_test = train_test_split(x, y, shuffle=True, test_size=0.2, random_state=42)
-print(x_train.shape) #(1712, 128, 862)
-print(x_test.shape) #(429, 128, 862)
+print(x_train.shape) #(938, 128, 862)
+print(x_test.shape) #(235, 128, 862)
 print(y_train.shape) #(1712,)
 print(y_test.shape) #(429,)
 
-x_train = x_train.reshape(1712,128,862,1)
-x_test = x_test.reshape(429,128,862,1)
+x_train = x_train.reshape(x_train.shape[0],128,862,1)
+x_test = x_test.reshape(x_test.shape[0],128,862,1)
 '''
 # 베스트 파라미터 찾기
 def modeling(optimizer='adam', learning_rate=0.1):
@@ -91,7 +90,6 @@ model.summary()
 
 start = datetime.now()
 
-############################################## f1 score ####################33##################################
 def recall(y_target, y_pred):
     # clip(t, clip_value_min, clip_value_max) : clip_value_min~clip_value_max 이외 가장자리를 깎아 낸다
     # round : 반올림한다
@@ -140,11 +138,10 @@ def f1score(y_target, y_pred):
     
     # return a single tensor value
     return _f1score
-###############################################################################################################
 
 # 컴파일, 훈련
 op=Adadelta(lr=1e-5)
-model.compile(optimizer=op, loss="sparse_categorical_crossentropy", metrics=["acc",f1score])
+model.compile(optimizer=op, loss="sparse_categorical_crossentropy", metrics=["acc", f1score])
 stop = EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True, verbose=1)
 lr = ReduceLROnPlateau(monitor='val_loss', vactor=0.5, patience=10, verbose=1)
 mcpath = 'C:/nmb/nmb_data/h5/speechvgg_mels_del4.h5'
@@ -156,12 +153,10 @@ tb = TensorBoard(log_dir='C:/nmb/nmb_data/graph/'+ start.strftime("%Y%m%d-%H%M%S
 # 평가, 예측
 model.load_weights('C:/nmb/nmb_data/h5/speechvgg_mels_del4.h5')
 
+
 _loss, _acc, _f1score = model.evaluate(x_test, y_test, batch_size=8)
-print('loss: {:.4f}, accuracy: {:.4f}, f1score: {:.4f}'.format(_loss, _acc, _f1score))
+print('loss: {:.3f}, accuracy: {:.3f}, f1score: {:.3f}'.format(_loss, _acc, _f1score))
 
-
-# result = model.evaluate(x_test, y_test, batch_size=8)
-# print('loss: ', result[0]); print('acc: ', result[1])
 
 # y_pred = model.predict(x_test)
 
@@ -194,67 +189,8 @@ end = datetime.now()
 time = end - start
 print("작업 시간 : " , time)  
 
-
 '''
-Model: "speech_vgg"
-_________________________________________________________________
-Layer (type)                 Output Shape              Param #
-=================================================================
-input_1 (InputLayer)         [(None, 128, 862, 1)]     0
-_________________________________________________________________
-block1_conv1 (Conv2D)        (None, 128, 862, 64)      640
-_________________________________________________________________
-block1_conv2 (Conv2D)        (None, 128, 862, 64)      36928
-_________________________________________________________________
-block1_pool (MaxPooling2D)   (None, 64, 431, 64)       0
-_________________________________________________________________
-block2_conv1 (Conv2D)        (None, 64, 431, 128)      73856
-_________________________________________________________________
-block2_conv2 (Conv2D)        (None, 64, 431, 128)      147584
-_________________________________________________________________
-block2_pool (MaxPooling2D)   (None, 32, 215, 128)      0
-_________________________________________________________________
-block3_conv1 (Conv2D)        (None, 32, 215, 256)      295168
-_________________________________________________________________
-block3_conv2 (Conv2D)        (None, 32, 215, 256)      590080
-_________________________________________________________________
-block3_conv3 (Conv2D)        (None, 32, 215, 256)      590080
-_________________________________________________________________
-block3_pool (MaxPooling2D)   (None, 16, 107, 256)      0
-_________________________________________________________________
-block4_conv1 (Conv2D)        (None, 16, 107, 512)      1180160
-_________________________________________________________________
-block4_conv2 (Conv2D)        (None, 16, 107, 512)      2359808
-_________________________________________________________________
-block4_conv3 (Conv2D)        (None, 16, 107, 512)      2359808
-_________________________________________________________________
-block4_pool (MaxPooling2D)   (None, 8, 53, 512)        0
-_________________________________________________________________
-block5_conv1 (Conv2D)        (None, 8, 53, 512)        2359808
-_________________________________________________________________
-block5_conv2 (Conv2D)        (None, 8, 53, 512)        2359808
-_________________________________________________________________
-block5_conv3 (Conv2D)        (None, 8, 53, 512)        2359808
-_________________________________________________________________
-block5_pool (MaxPooling2D)   (None, 4, 26, 512)        0
-_________________________________________________________________
-flatten_new (Flatten)        (None, 53248)             0
-_________________________________________________________________
-fc1_new (Dense)              (None, 256)               13631744
-_________________________________________________________________
-fc2_new (Dense)              (None, 256)               65792
-_________________________________________________________________
-predictions_new (Dense)      (None, 2)                 514
-=================================================================
-Total params: 28,411,586
-Trainable params: 28,411,586
-Non-trainable params: 0
-_________________________________________________________________
-
-'''
-
-'''
-loss: 0.2115, accuracy: 0.9347, f1score: 0.6150
+loss: 0.185, accuracy: 0.945, f1score: 0.080
 C:\nmb\nmb_data\pred_voice\FY1.wav 90.99363088607788 %의 확률로 여자입니다.
 C:\nmb\nmb_data\pred_voice\MZ1.wav 91.18536114692688 %의 확률로 남자입니다.
 C:\nmb\nmb_data\pred_voice\friendvoice_F4.wav 98.60531091690063 %의 확률로 여자입니다.
@@ -270,5 +206,5 @@ C:\nmb\nmb_data\pred_voice\testvoice_F3(clear).wav 93.25112104415894 %의 확률
 C:\nmb\nmb_data\pred_voice\testvoice_M1(clear).wav 92.67841577529907 %의 확률로 남자입니다.
 C:\nmb\nmb_data\pred_voice\testvoice_M2(clear).wav 67.82888174057007 %의 확률로 남자입니다.
 C:\nmb\nmb_data\pred_voice\testvoice_M2_low(clear).wav 95.23817300796509 %의 확률로 남자입니다.
-작업 시간 :  0:00:16.206817
+작업 시간 :  0:00:15.465837
 '''
