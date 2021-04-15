@@ -144,21 +144,24 @@ def f1score(y_target, y_pred):
 
 # 컴파일, 훈련
 op=Adadelta(lr=1e-5)
-model.compile(optimizer=op, loss="sparse_categorical_crossentropy", metrics=["acc",f1score])
+# model.compile(optimizer=op, loss="sparse_categorical_crossentropy", metrics=["acc",f1score])
+model.compile(optimizer=op, loss="sparse_categorical_crossentropy", metrics=["acc"])
 stop = EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True, verbose=1)
 lr = ReduceLROnPlateau(monitor='val_loss', vactor=0.5, patience=10, verbose=1)
 mcpath = 'C:/nmb/nmb_data/h5/speechvgg_mels_del4.h5'
 mc = ModelCheckpoint(mcpath, monitor='val_loss', verbose=1, save_best_only=True, save_weights_only=True)
 tb = TensorBoard(log_dir='C:/nmb/nmb_data/graph/'+ start.strftime("%Y%m%d-%H%M%S") + "/",histogram_freq=0, write_graph=True, write_images=True)
-# history = model.fit(x_train, y_train, epochs=1000, batch_size=8, validation_split=0.2, callbacks=[stop, lr, mc, tb])
+history = model.fit(x_train, y_train, epochs=5000, batch_size=8, validation_split=0.2, callbacks=[stop, lr, mc, tb])
 
 # --------------------------------------
 # 평가, 예측
 model.load_weights('C:/nmb/nmb_data/h5/speechvgg_mels_del4.h5')
 
-_loss, _acc, _f1score = model.evaluate(x_test, y_test, batch_size=8)
-print('loss: {:.4f}, accuracy: {:.4f}, f1score: {:.4f}'.format(_loss, _acc, _f1score))
+# _loss, _acc, _f1score = model.evaluate(x_test, y_test, batch_size=8)
+# print('loss: {:.4f}, accuracy: {:.4f}, f1score: {:.4f}'.format(_loss, _acc, _f1score))
 
+_loss, _acc = model.evaluate(x_test, y_test, batch_size=8)
+print('loss: {:.4f}, accuracy: {:.4f}, f1score: {:.4f}'.format(_loss, _acc))
 
 # result = model.evaluate(x_test, y_test, batch_size=8)
 # print('loss: ', result[0]); print('acc: ', result[1])
