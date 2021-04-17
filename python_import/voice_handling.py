@@ -84,8 +84,6 @@ def voice_split(origin_dir, threshold, out_dir):
     print('==== wav split done ====')
 
 
-
-
 ########################## 5초씩 잘라서 1분까지만 모으기 ######################
 
 def voice_split_1m(origin_dir, threshold, end_threshold, out_dir):

@@ -2,10 +2,9 @@ import librosa
 from pydub import AudioSegment
 import soundfile as sf
 import os
-from voice_handling import import_test, voice_sum
-
-import_test()
-# ==== it will be great ====
+import sys
+sys.path.append('c:/nmb/nada/python_import/')
+from voice_handling import voice_sum
 
 # ---------------------------------------------------------------
 # voice_sum: 오디오 한 wav 파일로 합쳐서 저장하기
