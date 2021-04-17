@@ -25,11 +25,11 @@ import_test()
 
 # 2) flac일 때
 
-filename = 'F (64)'
+filename = 'F (25)'
 
-path_flac = 'C:\\nmb\\nmb_data\\SLR\\F\\'+ filename + '\\'
-path_save = 'C:\\nmb\\nmb_data\\SLR\\save_wav\\'+ filename + '\\'
-path_out = 'C:\\nmb\\nmb_data\\SLR\\open_slr_wav\\' + filename + '.wav'
+path_flac = 'C:\\nmb\\nmb_data\\audio\\F\\'+ filename + '\\'
+path_save = 'C:\\nmb\\nmb_data\\audio\\save_wav\\'+ filename + '\\'
+path_out = 'C:\\nmb\\nmb_data\\audio\\open_slr_wav\\' + filename + '.wav'
 voice_sum(form='flac', audio_dir=path_flac, save_dir=path_save, out_dir=path_out)
 
 
