@@ -16,17 +16,32 @@ import_test()
 # save_dir(flac일 경우 wav파일로 저장할 경로) = 'C:/nmb/nmb_data/F1F2F3/F3_to_wave/'
 # out_dir(wav파일을 합쳐서 저장할 경로+파일명까지) = "C:/nmb/nmb_data/combine_test/F3_sum.wav"
 
-# 1) wav일 때
-filename = 'mz9'
-path_wav = 'C:\\nmb\\nmb_data\\korea_corpus\\m\\' + filename
-path_out = 'C:\\nmb\\nmb_data\\korea_corpus\\korea_corpus_male\\' + filename + '.wav'
-voice_sum(form='wav', audio_dir=path_wav, save_dir=None, out_dir=path_out)
+# # 1) wav일 때
+# filename = 'F(1)'
+# path_wav = 'C:\\nmb\\nmb_data\\SLR\\F\\' + filename
+# path_out = 'C:\\nmb\\nmb_data\\SLR\\open_slr_f_1m\\' + filename + '.wav'
+# voice_sum(form='wav', audio_dir=path_wav, save_dir=None, out_dir=path_out)
 
 
-# # 2) flac일 때
-# path_flac = 'D:/nmb_test/test_flac/'
-# path_save = 'D:/nmb_test/test_flac_to_wav/'
-# path_out = 'D:/nmb_test/test_sum/test_02_flac_to_wave_sum.wav'
-# voice_sum(form='flac', audio_dir=path_flac, save_dir=path_save, out_dir=path_out)
+# 2) flac일 때
+
+filename = 'F (64)'
+
+path_flac = 'C:\\nmb\\nmb_data\\SLR\\F\\'+ filename + '\\'
+path_save = 'C:\\nmb\\nmb_data\\SLR\\save_wav\\'+ filename + '\\'
+path_out = 'C:\\nmb\\nmb_data\\SLR\\open_slr_wav\\' + filename + '.wav'
+voice_sum(form='flac', audio_dir=path_flac, save_dir=path_save, out_dir=path_out)
 
 
+# for i in range(1, 33):
+#     form = 'flac'   
+#     audio_dir = 'c:/nmb/nmb_data/SLR/F/F' + str(i) + '/'
+#     save_dir = 'c:/nmb/nmb_data/SLR/save_wav/F' + str(i) + '/'
+#     out_dir = 'c:/nmb/nmb_data/SLR/open_slr_f_1m/F' + str(i) + '.wav'
+
+# voice_sum(
+#         form = form,
+#         audio_dir = audio_dir,
+#         save_dir = save_dir,
+#         out_dir = out_dir
+#     )

@@ -16,10 +16,17 @@ import_test()
 # out_dir(5초씩 잘려진 wav 파일을 저장할 경로) = 'D:/nmb_test/test_split/'
 
 # 적용해보자!
-filename = 'mz9'
-origin_dir = 'C:\\nmb\\nmb_data\\korea_corpus\\korea_corpus_male\\'+ filename + '.wav'
+# filename = 'mz9'
+# origin_dir = 'C:\\nmb\\nmb_data\\korea_corpus\\korea_corpus_male\\'+ filename + '.wav'
+# threshold = 5000 # 몇초씩 자를 것인지 설정
+# out_dir = 'C:\\nmb\\nmb_data\\korea_corpus\\korea_corpus_m_1m\\'
+# end_threshold = 60000 # 끝나는 지점(1분)
+# voice_split_1m(origin_dir=origin_dir, threshold=threshold, end_threshold =end_threshold,out_dir=out_dir)
+
+
+filename = 'F (64)'
+origin_dir = 'C:\\nmb\\nmb_data\\SLR\\open_slr_wav\\'+ filename + '.wav'
 threshold = 5000 # 몇초씩 자를 것인지 설정
-out_dir = 'C:\\nmb\\nmb_data\\korea_corpus\\korea_corpus_m_1m\\'
+out_dir = 'C:\\nmb\\nmb_data\\SLR\\open_slr_f_1m\\'
 end_threshold = 60000 # 끝나는 지점(1분)
 voice_split_1m(origin_dir=origin_dir, threshold=threshold, end_threshold =end_threshold,out_dir=out_dir)
-# 잘 된다잉~

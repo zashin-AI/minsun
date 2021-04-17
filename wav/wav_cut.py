@@ -1,10 +1,10 @@
 from pydub import AudioSegment
-import os
+# import os
 
-print(os.getcwd())  
+# print(os.getcwd())  
 
-if not os.path.isdir("girl"):
-    os.mkdir("girl")
+# if not os.path.isdir():
+#     os.mkdir()
 
 audio = AudioSegment.from_file("C:\\nmb\\nmb_data\\youtube\\girl_audio.wav")
 lengthaudio = len(audio)
@@ -20,7 +20,7 @@ while start < len(audio):
     end += threshold
     print(start , end)
     chunk = audio[start:end]
-    filename = f"C:\\nmb\\nmb_data\\youtube\\chunk{counter}.wav"
+    filename = f"C:\\nmb\\nmb_data\\youtube\\girl\\chunk{counter}.wav"
     chunk.export(filename, format="wav")
     counter +=1
     start += threshold
