@@ -5,7 +5,7 @@ from datetime import datetime
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.models import Sequential, load_model, Model
-from tensorflow.keras.layers import Dense, Conv2D, MaxPool2D, AveragePooling2D, Dropout, Activation, Flatten, Add, Input, Concatenate
+from tensorflow.keras.layers import Dense, Conv2D, MaxPool2D, AveragePooling2D, Dropout, Activation, Flatten, Add, Input, Concatenate, MaxPooling2D
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau, ModelCheckpoint, TensorBoard
 from tensorflow.keras.optimizers import Adadelta, Adam, Nadam, RMSprop
 
@@ -32,34 +32,23 @@ print(x_train.shape, y_train.shape) # (3072, 128, 862, 1) (3072,)
 print(x_test.shape, y_test.shape)   # (768, 128, 862, 1) (768,) 
 
 # 모델 구성
+# Convolution - Batch Normalization - Activation - Dropout - Pooling
+
 model = Sequential()
-def residual_block(x, filters, conv_num=3, activation='relu'): 
-    # Shortcut
-    s = Conv2D(filters, 1, padding='same')(x)
 
-    for i in range(conv_num - 1):
-        x = Conv2D(filters, 3, padding='same')(x)
-        x = Activation(activation)(x)
-    x = Conv2D(filters, 3, padding='same')(x)
-    x = Add()([x, s])
-    x = Activation(activation)(x)
-    return MaxPool2D(pool_size=2, strides=1)(x)
+activation = 'relu'
+inputs = Input(shape=(128,862,1))
+x = Conv2D(16,3, padding='same')(inputs)
+x = Activation(activation)(x)
+x = Conv2D(16, 3, padding='same')(x)
+x = Activation(activation)(x)
+s = Conv2D(16, 1,padding='same')(x)
+x = Add()([x,s])
+x = Activation('relu')(x)
+x = M
 
-def build_model(input_shape, num_classes):
-    inputs = Input(shape=input_shape, name='input')
-    x = residual_block(inputs, 16, 2)
-    x = residual_block(x, 32, 2)
-    x = residual_block(x, 64, 3)
-    # x = residual_block(x, 128, 3)
-    # x = residual_block(x, 128, 3)
 
-    x = AveragePooling2D(pool_size=3, strides=3)(x)
-    x = Flatten()(x)
-    x = Dense(256, activation="relu")(x)
-    x = Dense(128, activation="relu")(x)
-    outputs = Dense(num_classes, activation='softmax', name="output")(x)
     
-    return Model(inputs=inputs, outputs=outputs)
 model = build_model(x_train.shape[1:], 2)
 print(x_train.shape[1:])    # (128, 862, 1)
 model.summary()
@@ -69,11 +58,11 @@ model.save('C:/nmb/nmb_data/h5/Conv2D_model_Adam.h5')
 start = datetime.now()
 # 컴파일, 훈련
 op = Adam(lr=1e-5)
-batch_size = 32
+batch_size = 64
 
 es = EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True, verbose=1)
 lr = ReduceLROnPlateau(monitor='val_loss', vactor=0.5, patience=10, verbose=1)
-path = 'C:/nmb/nmb_data/h5/Conv2D_weight_Adam32_5.h5'
+path = 'C:/nmb/nmb_data/h5/Conv2D_weight_Adam_5.h5'
 mc = ModelCheckpoint(path, monitor='val_loss', verbose=1, save_best_only=True)
 tb = TensorBoard(log_dir='C:/nmb/nmb_data/graph/'+ start.strftime("%Y%m%d-%H%M%S") + "/",histogram_freq=0, write_graph=True, write_images=True)
 model.compile(optimizer=op, loss="sparse_categorical_crossentropy", metrics=['acc'])
@@ -81,7 +70,7 @@ history = model.fit(x_train, y_train, epochs=5000, batch_size=batch_size, valida
 
 
 # 평가, 예측
-model.load_weights('C:/nmb/nmb_data/h5/Conv2D_weight_Adam32_5.h5')
+model.load_weights('C:/nmb/nmb_data/h5/Conv2D_weight_Adam_5.h5')
 result = model.evaluate(x_test, y_test, batch_size=batch_size)
 print("loss : {:.5f}".format(result[0]))
 print("acc : {:.5f}".format(result[1]))
