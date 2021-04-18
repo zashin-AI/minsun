@@ -161,7 +161,7 @@ model.load_weights('C:/nmb/nmb_data/h5/speechvgg_mels_del4.h5')
 # print('loss: {:.4f}, accuracy: {:.4f}, f1score: {:.4f}'.format(_loss, _acc, _f1score))
 
 _loss, _acc = model.evaluate(x_test, y_test, batch_size=8)
-print('loss: {:.4f}, accuracy: {:.4f}, f1score: {:.4f}'.format(_loss, _acc))
+print('loss: {:.4f}, accuracy: {:.4f}'.format(_loss, _acc))
 
 # result = model.evaluate(x_test, y_test, batch_size=8)
 # print('loss: ', result[0]); print('acc: ', result[1])
