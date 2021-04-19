@@ -1,5 +1,4 @@
 import numpy as np
-import os
 import librosa
 import sklearn
 from datetime import datetime
@@ -9,6 +8,7 @@ from tensorflow.keras.models import Sequential, load_model, Model
 from tensorflow.keras.layers import Dense, Conv2D, MaxPool2D, AveragePooling2D, Dropout, Activation, Flatten, Add, Input, Concatenate
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau, ModelCheckpoint, TensorBoard
 from tensorflow.keras.optimizers import Adadelta, Adam, Nadam, RMSprop
+from tensorflow.python.keras.layers.pooling import MaxPooling2D
 
 
 # 데이터 불러오기
@@ -33,11 +33,47 @@ print(x_train.shape, y_train.shape) # (3072, 128, 862, 1) (3072,)
 print(x_test.shape, y_test.shape)   # (768, 128, 862, 1) (768,) 
 
 # 모델 구성
+# 리키렐루는 각 뉴런의 출력값이 0보다 높으면 그대로 두고, 0보다 낮으면 정해진 숫자를 곱하는 방식의 함수이다.
+# 렐루(ReLU)의 경우 0보다 작을 때 경사가 사라지는 문제가 있지만 리키렐루의 경우 0보다 작을 때도 미분을 적용할 수 있다.
 model = Sequential()
-def residual_block(x, filters, conv_num=3, activation='relu'): 
-    # Shortcut
-    s = Conv2D(filters, 1, padding='same')(x)
 
+activation = 'relu'
+
+inputs = Input(shape=x_train.shape[1:])
+
+def model(output_dim=8, max_length=50, y_dim=5, num_filters=5, filter_sizes = [3,5], pooling = 'max', pool_padding = 'valid', dropout = 0.2):
+    # Input Layer
+    inputs = Input(shape=x_train.shape[1:])
+    x = Conv2D(5,5)(inputs)
+    x = Activation('leakyrelu')(x)
+    ## concat
+    pooled_outputs = []
+    for i in range(len(filter_sizes)):
+        conv = Conv1D(num_filters, kernel_size=filter_sizes[i], padding='valid', activation='relu')(x)
+        if pooling=='max':
+            conv = MaxPooling1D(pool_size=max_length-filter_sizes[i]+1, strides=1, padding = pool_padding)(conv)
+        else:
+            conv = AveragePooling1D(pool_size=max_length-filter_sizes[i]+1, strides=1, padding = pool_padding)(conv)            
+        pooled_outputs.append(conv)
+    merge = concatenate(pooled_outputs)
+        
+    x = Flatten()(merge)
+    x = Dropout(dropout)(x)
+#     predictions = Dense(y_dim, activation = 'sigmoid')(x)
+    predictions = Dense(y_dim, activation = 'softmax')(x) # TEST
+    
+    model = Model(inputs=embed_input,outputs=predictions)
+
+    model.compile(optimizer='adam',loss = 'categorical_crossentropy', metrics = ['acc'])
+    print(model.summary())
+    
+    from keras.utils import plot_model
+    plot_model(model, to_file='shared_input_layer.png')
+    
+    return model
+
+
+def residual_block(x, filters, conv_num=4, activation='relu'): 
     for i in range(conv_num - 1):
         x = Conv2D(filters, 3, padding='same')(x)
         x = Activation(activation)(x)
@@ -69,12 +105,12 @@ model.save('C:/nmb/nmb_data/h5/Conv2D_model_Adam.h5')
 
 start = datetime.now()
 # 컴파일, 훈련
-op = Adadelta(lr=1e-5)
-batch_size =64
+op = Nadam(lr=1e-3)
+batch_size = 32
 
 es = EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True, verbose=1)
 lr = ReduceLROnPlateau(monitor='val_loss', vactor=0.5, patience=10, verbose=1)
-path = 'C:/nmb/nmb_data/h5/Conv2D_weight_DEL64_5.h5'
+path = 'C:/nmb/nmb_data/h5/Conv2D_weight_NA32_3.h5'
 mc = ModelCheckpoint(path, monitor='val_loss', verbose=1, save_best_only=True)
 tb = TensorBoard(log_dir='C:/nmb/nmb_data/graph/'+ start.strftime("%Y%m%d-%H%M%S") + "/",histogram_freq=0, write_graph=True, write_images=True)
 model.compile(optimizer=op, loss="sparse_categorical_crossentropy", metrics=['acc'])
@@ -82,54 +118,48 @@ history = model.fit(x_train, y_train, epochs=5000, batch_size=batch_size, valida
 
 
 # 평가, 예측
-model.load_weights('C:/nmb/nmb_data/h5/Conv2D_weight_DEL64_5.h5')
+model.load_weights('C:/nmb/nmb_data/h5/Conv2D_weight_NA32_3.h5')
 result = model.evaluate(x_test, y_test, batch_size=batch_size)
 print("loss : {:.5f}".format(result[0]))
 print("acc : {:.5f}".format(result[1]))
 
-############################################ PREDICT ####################################
-pred = ['C:/nmb/nmb_data/predict/F','C:/nmb/nmb_data/predict/M','C:/nmb/nmb_data/predict/ODD']
-
+pred_pathAudio = 'C:/nmb/nmb_data/predict/F'
+files = librosa.util.find_files(pred_pathAudio, ext=['wav'])
+files = np.asarray(files)
 count_f = 0
+
+for file in files:   
+    y, sr = librosa.load(file, sr=22050) 
+    mels = librosa.feature.melspectrogram(y, sr=sr, hop_length=128, n_fft=512)
+    pred_mels = librosa.amplitude_to_db(mels, ref=np.max)
+    pred_mels = pred_mels.reshape(1, pred_mels.shape[0], pred_mels.shape[1])
+    y_pred = model.predict(pred_mels)
+    y_pred_label = np.argmax(y_pred)
+    if y_pred_label == 0 :
+        count_f += 1                 
+        print(file,'{:.4f} %의 확률로 여자입니다.'.format((y_pred[0][0])*100))
+    else:                         
+        print(file, '{:.4f} %의 확률로 남자입니다.'.format((y_pred[0][1])*100))
+
+pred_pathAudio = 'C:/nmb/nmb_data/predict/M'
+files = librosa.util.find_files(pred_pathAudio, ext=['wav'])
+files = np.asarray(files)
 count_m = 0
-count_odd = 0
+for file in files:   
+    y, sr = librosa.load(file, sr=22050) 
+    mels = librosa.feature.melspectrogram(y, sr=sr, hop_length=128, n_fft=512)
+    pred_mels = librosa.amplitude_to_db(mels, ref=np.max)
+    pred_mels = pred_mels.reshape(1, pred_mels.shape[0], pred_mels.shape[1])
+    y_pred = model.predict(pred_mels)
+    y_pred_label = np.argmax(y_pred)
+    if y_pred_label == 0 :               
+        print(file,'{:.4f} %의 확률로 여자입니다.'.format((y_pred[0][0])*100))
+    else:
+        count_m += 1                              
+        print(file, '{:.4f} %의 확률로 남자입니다.'.format((y_pred[0][1])*100))
 
-for pred_pathAudio in pred : 
-    files = librosa.util.find_files(pred_pathAudio, ext=['wav'])
-    files = np.asarray(files)
-    for file in files:   
-        name = os.path.basename(file)
-        length = len(name)
-        name = name[0]
-
-        y, sr = librosa.load(file, sr=22050) 
-        mels = librosa.feature.melspectrogram(y, sr=sr, hop_length=128, n_fft=512)
-        pred_mels = librosa.amplitude_to_db(mels, ref=np.max)
-        pred_mels = pred_mels.reshape(1, pred_mels.shape[0], pred_mels.shape[1])
-        y_pred = model.predict(pred_mels)
-        y_pred_label = np.argmax(y_pred)
-        if y_pred_label == 0 :  # 여성이라고 예측
-            print(file,'{:.4f} %의 확률로 여자입니다.'.format((y_pred[0][0])*100))
-            if length > 9 :    # 이상치
-                if name == 'F' :
-                    count_odd = count_odd + 1                   
-            else :
-                if name == 'F' :
-                    count_f = count_f + 1
-                
-        else:                   # 남성이라고 예측              
-            print(file,'{:.4f} %의 확률로 남자입니다.'.format((y_pred[0][1])*100))
-            if length > 9 :    # 이상치
-                if name == 'M' :
-                    count_odd = count_odd + 1
-            else :
-                if name == 'M' :
-                    count_m = count_m + 1
-                
-                    
 print("43개 여성 목소리 중 "+str(count_f)+"개 정답")
 print("42개 남성 목소리 중 "+str(count_m)+"개 정답")
-print("10개 이상치 목소리 중 "+str(count_odd)+"개 정답")
 
 
 end = datetime.now()
@@ -137,13 +167,13 @@ time = end - start
 print("작업 시간 : " , time)  
 
 
-import winsound as sd
-def beepsound():
-    fr = 440    # range : 37 ~ 32767
-    du = 500     # 1000 ms ==1second
-    sd.Beep(fr, du) # winsound.Beep(frequency, duration)
+# # import winsound as sd
+# # def beepsound():
+# #     fr = 440    # range : 37 ~ 32767
+# #     du = 500     # 1000 ms ==1second
+# #     sd.Beep(fr, du) # winsound.Beep(frequency, duration)
 
-beepsound()
+# # beepsound()
 
 '''
 __________________________________________________________________________________________________
