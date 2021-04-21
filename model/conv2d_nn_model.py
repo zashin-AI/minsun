@@ -41,11 +41,13 @@ activation = 'relu'
 
 inputs = Input(shape=x_train.shape[1:])
 
-def model(output_dim=8, max_length=50, y_dim=5, num_filters=5, filter_sizes = [3,5], pooling = 'max', pool_padding = 'valid', dropout = 0.2):
+# ONE LAYER
+def model(output_dim=8, max_length=50, num_filters=5, filter_sizes = [3,5], pooling = 'max', pool_padding = 'valid', dropout = 0.2):
     # Input Layer
-    inputs = Input(shape=x_train.shape[1:])
-    x = Conv2D(5,5)(inputs)
-    x = Activation('leakyrelu')(x)
+#     embed_input = Input(shape=(max_length,output_dim))
+    embed_input = Input(shape=(max_length,))
+    x = Embedding(vocab_size,output_dim,input_length=max_length)(embed_input)
+#     x = SpatialDropout1D(0.2)(x)
     ## concat
     pooled_outputs = []
     for i in range(len(filter_sizes)):
@@ -60,7 +62,7 @@ def model(output_dim=8, max_length=50, y_dim=5, num_filters=5, filter_sizes = [3
     x = Flatten()(merge)
     x = Dropout(dropout)(x)
 #     predictions = Dense(y_dim, activation = 'sigmoid')(x)
-    predictions = Dense(y_dim, activation = 'softmax')(x) # TEST
+    predictions = Dense(2, activation = 'softmax')(x) # TEST
     
     model = Model(inputs=embed_input,outputs=predictions)
 
@@ -72,6 +74,10 @@ def model(output_dim=8, max_length=50, y_dim=5, num_filters=5, filter_sizes = [3
     
     return model
 
+
+model = model(output_dim=16, max_length=max_length,y_dim=5,filter_sizes = [3,4,5],pooling = 'max',dropout=0.5)  
+
+    
 
 def residual_block(x, filters, conv_num=4, activation='relu'): 
     for i in range(conv_num - 1):
