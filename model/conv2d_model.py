@@ -66,6 +66,7 @@ model.summary()
 # Total params: 48,076,834
 # Trainable params: 48,076,834
 # Non-trainable params: 0
+
 # 컴파일, 훈련
 model.compile(optimizer='adam', loss="sparse_categorical_crossentropy", metrics=['acc'])
 es = EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True, verbose=1)
