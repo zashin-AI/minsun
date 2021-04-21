@@ -43,7 +43,7 @@ print(x_train.shape, y_train.shape) # (3072, 128, 862, 1) (3072,)
 print(x_test.shape, y_test.shape)   # (768, 128, 862, 1) (768,) 
 
 # 모델 구성
-model = load_model('C:/nmb/nmb_data/h5/Conv2D_model_t6.h5')
+model = load_model('C:/nmb/nmb_data/h5/Conv2D_model_t11.h5')
 
 start = datetime.now()
 
@@ -102,22 +102,86 @@ batch_size =16
 
 es = EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True, verbose=1)
 lr = ReduceLROnPlateau(monitor='val_loss', vactor=0.5, patience=10, verbose=1)
-# path = 'C:/nmb/nmb_data/h5/Conv2D_weight_F_imbal.h5' # 여자 20
+# path = 'C:/nmb/nmb_data/h5/Conv2D_weight_F_imbal6.h5' # 여자 20
 path = 'C:/nmb/nmb_data/h5/Conv2D_weight_M_imbal6.h5' # 남자 20
 mc = ModelCheckpoint(path, monitor='val_loss', verbose=1, save_best_only=True)
 tb = TensorBoard(log_dir='C:/nmb/nmb_data/graph/'+ start.strftime("%Y%m%d-%H%M%S") + "/",histogram_freq=0, write_graph=True, write_images=True)
 model.compile(optimizer=op, loss="sparse_categorical_crossentropy", metrics=['acc',f1score])
-history = model.fit(x_train, y_train, epochs=5000, batch_size=batch_size, validation_split=0.2, callbacks=[es, lr, mc, tb])
+# history = model.fit(x_train, y_train, epochs=5000, batch_size=batch_size, validation_split=0.2, callbacks=[es, lr, mc, tb])
 
 # 평가, 예측
-# model.load_weights('C:/nmb/nmb_data/h5/Conv2D_weight_F_imbal.h5') # 여자 20
+# model.load_weights('C:/nmb/nmb_data/h5/Conv2D_weight_F_imbal6.h5') # 여자 20
 model.load_weights('C:/nmb/nmb_data/h5/Conv2D_weight_M_imbal6.h5') # 남자 20
 result = model.evaluate(x_test, y_test, batch_size=batch_size)
 print("loss : {:.5f}".format(result[0]))
 print("acc : {:.5f}".format(result[1]))
 print("f1score : {:.5f}".format(result[2]))
 
+############################################ PREDICT ####################################
+pred = ['C:/nmb/nmb_data/predict/F','C:/nmb/nmb_data/predict/M','C:/nmb/nmb_data/predict/ODD']
 
-# loss : 0.15782
-# acc : 0.96042
+count_f = 0
+count_m = 0
+count_odd = 0
+
+for pred_pathAudio in pred : 
+    files = librosa.util.find_files(pred_pathAudio, ext=['wav'])
+    files = np.asarray(files)
+    for file in files:   
+        name = os.path.basename(file)
+        length = len(name)
+        name = name[0]
+
+        y, sr = librosa.load(file, sr=22050) 
+        mels = librosa.feature.melspectrogram(y, sr=sr, hop_length=128, n_fft=512)
+        pred_mels = librosa.amplitude_to_db(mels, ref=np.max)
+        pred_mels = pred_mels.reshape(1, pred_mels.shape[0], pred_mels.shape[1])
+        y_pred = model.predict(pred_mels)
+        y_pred_label = np.argmax(y_pred)
+        if y_pred_label == 0 :  # 여성이라고 예측
+            print(file,'{:.4f} %의 확률로 여자입니다.'.format((y_pred[0][0])*100))
+            if length > 9 :    # 이상치
+                if name == 'F' :
+                    count_odd = count_odd + 1                   
+            else :
+                if name == 'F' :
+                    count_f = count_f + 1
+                
+        else:                   # 남성이라고 예측              
+            print(file,'{:.4f} %의 확률로 남자입니다.'.format((y_pred[0][1])*100))
+            if length > 9 :    # 이상치
+                if name == 'M' :
+                    count_odd = count_odd + 1
+            else :
+                if name == 'M' :
+                    count_m = count_m + 1
+                
+                    
+print("43개 여성 목소리 중 "+str(count_f)+"개 정답")
+print("42개 남성 목소리 중 "+str(count_m)+"개 정답")
+print("10개 이상치 목소리 중 "+str(count_odd)+"개 정답")
+
+
+end = datetime.now()
+time = end - start
+print("작업 시간 : " , time) 
+
+# t11
+
+# 여성>남성
+# loss : 0.06605
+# acc : 0.97708
 # f1score : 0.31737
+# 43개 여성 목소리 중 40개 정답
+# 42개 남성 목소리 중 40개 정답
+# 10개 이상치 목소리 중 9개 정답
+# 작업 시간 :  0:04:50.081847
+
+# 남성>여성
+# loss : 0.01379
+# acc : 0.99792
+# f1score : 0.87309
+# 43개 여성 목소리 중 39개 정답
+# 42개 남성 목소리 중 41개 정답
+# 10개 이상치 목소리 중 8개 정답
+# 작업 시간 :  0:05:31.939724
