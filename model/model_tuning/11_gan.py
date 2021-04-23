@@ -89,13 +89,13 @@ print("acc : {:.5f}".format(result[1]))
 
 ############################################ PREDICT ####################################
 
-pathAudio_F = 'C:\\nmb\\nmb_data\\predict\\gan'
+pathAudio_F = 'C:\\nmb\\nmb_data\\0422test'
 
 
 files_F = librosa.util.find_files(pathAudio_F, ext=['flac','wav'])
 
 aaa=1
-
+'''
 for file in files_F:
     y, sr = librosa.load(file, sr=22050, duration=5.0)
     mels = librosa.feature.melspectrogram(y, sr=sr, n_fft=512, hop_length=128, n_mels=128)
@@ -107,7 +107,7 @@ for file in files_F:
         print(file,'{:.4f} %의 확률로 여자입니다.'.format((y_pred[0][0])*100))
     else:                   # 남성이라고 예측              
         print(file,'{:.4f} %의 확률로 남자입니다.'.format((y_pred[0][1])*100))
-
+'''
 # loss : 0.05219
 # acc : 0.98568
 # C:\nmb\nmb_data\predict\gan\F10000.wav 91.0954 %의 확률로 남자입니다.
@@ -115,3 +115,19 @@ for file in files_F:
 # C:\nmb\nmb_data\predict\gan\F30000.wav 96.7462 %의 확률로 남자입니다.
 # C:\nmb\nmb_data\predict\gan\F5000.wav 79.6266 %의 확률로 남자입니다.
 # 작업 시간 :  0:00:04.071813
+
+
+for file in files_F:
+    y, sr = librosa.load(file, sr=22050)
+    mels = librosa.feature.melspectrogram(y, sr=sr, n_fft=512, hop_length=128)
+    print(mels.shape) #(128, 5168)
+    mels = librosa.amplitude_to_db(mels, ref=np.max)
+    print(mels.shape) #(128, 5168)
+    mels = mels.reshape(1, mels.shape[0], int(mels.shape[1]/aaa), aaa)
+    print(mels.shape) #(1, 128, 5168, 1)
+    y_pred = model.predict(mels)
+    y_pred_label = np.argmax(y_pred)
+    if y_pred_label == 0 :  # 여성이라고 예측
+        print(file,'{:.4f} %의 확률로 여자입니다.'.format((y_pred[0][0])*100))
+    else:                   # 남성이라고 예측              
+        print(file,'{:.4f} %의 확률로 남자입니다.'.format((y_pred[0][1])*100))

@@ -10,7 +10,7 @@ import youtube_dl
 ydl_opts = {
     'format': 'bestaudio/best',
     'postprocessors': [{
-        'key': 'FFmpegExtractAudio',
+        'key': 'FFmpegExtractAudio',.
         'preferredcodec': 'mp3',
         'preferredquality': '192',
     }],

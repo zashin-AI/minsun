@@ -28,7 +28,7 @@ filename = 'F (25)'
 
 path_flac = 'C:\\nmb\\nmb_data\\audio\\F\\'+ filename + '\\'
 path_save = 'C:\\nmb\\nmb_data\\audio\\save_wav\\'+ filename + '\\'
-path_out = 'C:\\nmb\\nmb_data\\audio\\open_slr_wav\\' + filename + '.wav'
+path_out = 'C:\\nmb\\nmb_data\\audio\\open_slr_f_sum\\' + filename + '.wav'
 voice_sum(form='flac', audio_dir=path_flac, save_dir=path_save, out_dir=path_out)
 
 
