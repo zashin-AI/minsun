@@ -16,21 +16,22 @@ from voice_handling import voice_sum
 # out_dir(wav파일을 합쳐서 저장할 경로+파일명까지) = "C:/nmb/nmb_data/combine_test/F3_sum.wav"
 
 # # 1) wav일 때
-# filename = 'F(1)'
-# path_wav = 'C:\\nmb\\nmb_data\\SLR\\F\\' + filename
-# path_out = 'C:\\nmb\\nmb_data\\SLR\\open_slr_f_1m\\' + filename + '.wav'
-# voice_sum(form='wav', audio_dir=path_wav, save_dir=None, out_dir=path_out)
+for i in range(5,7):
+    filename = f'fz0{i}'
+    path_wav = 'C:\\nmb\\nmb_data\\audio_data\\korea_corpus\\F\\'+ filename + '\\'
+    path_out = 'C:\\nmb\\nmb_data\\audio_sum\\korea_corpus_f_sum\\' + filename + '.wav'
+    voice_sum(form='wav', audio_dir=path_wav, save_dir=None, out_dir=path_out)
 
 
 # 2) flac일 때
 
-for i in range(1,42):
-    filename = f'M ({i})'
+# for i in range(1,11):
+#     filename = f'F ({i})'
 
-    path_flac = 'C:\\nmb\\nmb_data\\audio_data\\open_slr_FM\\M\\'+ filename + '\\'
-    path_save = 'C:\\nmb\\nmb_data\\audio_sum\\save_wav\\open_slr_m_save_wav\\'+ filename + '\\'
-    path_out = 'C:\\nmb\\nmb_data\\audio_sum\\open_slr_m_sum\\' + filename + '.wav'
-    voice_sum(form='flac', audio_dir=path_flac, save_dir=path_save, out_dir=path_out)
+#     path_flac = 'C:\\nmb\\nmb_data\\audio_data\\pansori\\F\\'+ filename + '\\'
+#     path_save = 'C:\\nmb\\nmb_data\\audio_sum\\save_wav\\pansori_f\\'+ filename + '\\'
+#     path_out = 'C:\\nmb\\nmb_data\\audio_sum\\pansori_f_sum\\' + filename + '.wav'
+#     voice_sum(form='flac', audio_dir=path_flac, save_dir=path_save, out_dir=path_out)
 
 
 # for i in range(1, 33):

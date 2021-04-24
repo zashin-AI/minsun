@@ -18,11 +18,11 @@ from voice_handling import voice_split, voice_split_m
 
 
 
-for i in range(1, 21):
-    filename = f'M ({i})'
-    origin_dir = 'C:\\nmb\\nmb_data\\audio_data_denoise\\1s2m\\korea_corpus_m_silence_denoise\\'+ filename + '.wav'
+for i in range(1, 19):
+    filename = f'M ({i})_denoise'
+    origin_dir = 'C:\\nmb\\nmb_data\\audio_data_denoise\\1s2m\\pansori_m_silence_denoise\\'+ filename + '.wav'
     threshold = 1000 # 몇초씩 자를 것인지 설정
-    out_dir = 'C:\\nmb\\nmb_data\\1s2m\\korea_corpus_m_split\\'
+    out_dir = 'C:\\nmb\\nmb_data\\1s2m\\pansori_m_split\\'
     end_threshold = 120000 # 끝나는 지점(2분)
     voice_split_m(origin_dir=origin_dir, threshold=threshold, end_threshold =end_threshold,out_dir=out_dir)
 
