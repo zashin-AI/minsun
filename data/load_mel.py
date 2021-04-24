@@ -33,11 +33,11 @@ for folder in total :
     dataset = []
     label = []
     for file in folder:
-        y, sr = librosa.load(file, sr=22050, duration=5.0)
+        y, sr = librosa.load(file, sr=22050, duration=1.0)
         length = (len(y) / sr)
         if length < 5.0 : pass
         else:
-            mels = librosa.feature.melspectrogram(y, sr=sr, n_fft=512, hop_length=128, n_mels=128)
+            mels = librosa.feature.melspectrogram(y, sr=sr, n_fft=512, hop_length=128)
             mels = librosa.amplitude_to_db(mels, ref=np.max)
             # plt.figure(figsize=(10,4))
             # plt.title('mel spectrogram')
