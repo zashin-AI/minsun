@@ -19,7 +19,7 @@ r = sr.Recognizer()
 # file_list = librosa.util.find_files('E:\\nmb\\nmb_data\\predict\\stt_denoise\\denoise', ext=['wav'])
 
 # slow
-file_list = librosa.util.find_files('C:\\nmb\\nmb_data\\predict\\ODD', ext=['wav'])
+file_list = librosa.util.find_files('C:\\nmb\\nmb_data\\silence\\sum\\open_slr_f_silence_sum', ext=['wav'])
 print(file_list)
 
 for j, path in enumerate(file_list) : 

@@ -24,12 +24,13 @@ from voice_handling import voice_sum
 
 # 2) flac일 때
 
-filename = 'F (25)'
+for i in range(1,42):
+    filename = f'M ({i})'
 
-path_flac = 'C:\\nmb\\nmb_data\\audio\\F\\'+ filename + '\\'
-path_save = 'C:\\nmb\\nmb_data\\audio\\save_wav\\'+ filename + '\\'
-path_out = 'C:\\nmb\\nmb_data\\audio\\open_slr_f_sum\\' + filename + '.wav'
-voice_sum(form='flac', audio_dir=path_flac, save_dir=path_save, out_dir=path_out)
+    path_flac = 'C:\\nmb\\nmb_data\\audio_data\\open_slr_FM\\M\\'+ filename + '\\'
+    path_save = 'C:\\nmb\\nmb_data\\audio_sum\\save_wav\\open_slr_m_save_wav\\'+ filename + '\\'
+    path_out = 'C:\\nmb\\nmb_data\\audio_sum\\open_slr_m_sum\\' + filename + '.wav'
+    voice_sum(form='flac', audio_dir=path_flac, save_dir=path_save, out_dir=path_out)
 
 
 # for i in range(1, 33):
