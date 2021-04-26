@@ -56,8 +56,7 @@ for j, path in enumerate(file_list) :
 
     full_txt = []
     # 말 자른 거 저장 & STT 
-    for i, chunk in enumerate(audio_chunks):
-        # out_file = "E:\\nmb\\nmb_data\\chunk\\"+ str(j) + f"chunk{i}.wav"        
+    for i, chunk in enumerate(audio_chunks):    
         out_file = "C:\\nmb\\nmb_data\\chunk\\"+ str(j) + f"chunk{i}.wav"
         # print ("exporting", out_file)
         chunk.export(out_file, format="wav")
