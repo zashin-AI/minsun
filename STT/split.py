@@ -1,3 +1,4 @@
+# 묵음 잘라내고 합치기
 
 import sys
 import os

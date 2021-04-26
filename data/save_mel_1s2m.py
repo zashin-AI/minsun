@@ -12,8 +12,6 @@ import numpy as np
 sys.path.append('C:/nmb/nada/python_import/')
 from feature_handling import load_data_mel
 
-# 정규화 (MinMaxScaler)
-
 # female
 # pathAudio_F = 'C:\\nmb\\nmb_data\\1s2m\\open_slr_f_split\\'
 # load_data_mel(pathAudio_F, 'wav', 0)
