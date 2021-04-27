@@ -1,11 +1,12 @@
-# https://www.javaer101.com/ko/article/21996994.html
+
 
 from pydub import AudioSegment,effects
 import librosa, librosa.display
 import matplotlib.pyplot as plt
-
-# 파일 생성 안됨
 '''
+파일 생성 안됨
+https://www.javaer101.com/ko/article/21996994.html
+
 def match_target_amplitude(sound, target_dBFS):
     change_in_dBFS = target_dBFS - sound.dBFS
     return sound.apply_gain(change_in_dBFS)
@@ -14,7 +15,9 @@ sound = AudioSegment.from_file("C:\\nmb\\nmb_data\\volume\\denoise\\friendvoice_
 normalized_sound = match_target_amplitude(sound, -20.0)
 normalized_sound.export("C:\\nmb\\nmb_data\\volume\\normal\\friendvoice_F4_normal.wav", format="wav")
 '''
+
 ########################################################################################
+# https://github.com/jiaaro/pydub/issues/144
 
 path = "C:\\nmb\\nmb_data\\volume\\denoise\\"
 outpath = "C:\\nmb\\nmb_data\\volume\\normal\\"
