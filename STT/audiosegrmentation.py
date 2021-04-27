@@ -19,7 +19,7 @@ r = sr.Recognizer()
 # file_list = librosa.util.find_files('E:\\nmb\\nmb_data\\predict\\stt_denoise\\denoise', ext=['wav'])
 
 # slow
-file_list = librosa.util.find_files('C:\\nmb\\nmb_data\\silence\\sum\\open_slr_f_silence_sum', ext=['wav'])
+file_list = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\STT voice denoise\\', ext=['wav'])
 print(file_list)
 
 for j, path in enumerate(file_list) : 
@@ -57,7 +57,7 @@ for j, path in enumerate(file_list) :
     full_txt = []
     # 말 자른 거 저장 & STT 
     for i, chunk in enumerate(audio_chunks):    
-        out_file = "C:\\nmb\\nmb_data\\chunk\\"+ str(j) + f"chunk{i}.wav"
+        out_file = "C:\\nmb\\nmb_data\\chunk\\test\\"+ str(j) + f"chunk{i}.wav"
         # print ("exporting", out_file)
         chunk.export(out_file, format="wav")
         aaa = sr.AudioFile(out_file)
@@ -80,3 +80,30 @@ for j, path in enumerate(file_list) :
         except : # 너무 짧은 음성은 pass 됨 
             pass
     print(path , '\n', full_txt)
+'''   
+C:\nmb\nmb_data\STT\STT voice denoise\test_01_denoise.wav
+ ['하루 확진자가 오늘로 나흘째 600명 때에 머물고 있습니다', '하지만 이스라엘은 사실상 집단면역 선언', '오늘부터 야외에서 마스크를 벗고 있습니다 JTBC 취재팀이 직접 이스라엘로 날아갔는데 잠시 후 상지 연
+결해 보겠습니다']
+C:\nmb\nmb_data\STT\STT voice denoise\test_02_denoise.wav
+ ['토끼와 자라', '옛날에', '어느 바닷속에 아주 아름다운 용궁이 있었어요', '그런데', '이 아름다운 용궁에 슬픈 일이 생겼답니다', '나이 많은 용왕님이', '시름시름 앓다가 자리에 누워 있기 때문이지요']     
+C:\nmb\nmb_data\STT\STT voice denoise\test_F1_denoise.wav
+ ['사람 간이 m 이상 거리 2', '거리두기 지침에 따라 이 자리는 비워 주소']
+C:\nmb\nmb_data\STT\STT voice denoise\test_F2_denoise.wav
+ ['사람과 님이 더 이상 거리두기 거리두기 지침에 따라 이 자리는 비워 주세요']
+C:\nmb\nmb_data\STT\STT voice denoise\test_F3_denoise.wav
+ ['사람 간이 m 이상 거리두기 거리두기 지침에 따라 이 자리는 비워 주세요']
+C:\nmb\nmb_data\STT\STT voice denoise\test_F4_denoise.wav
+ ['실내 사람과 님이 더 이상 거리두기 거리두기 지침에 따라 이 자리는 비어 주세요']
+C:\nmb\nmb_data\STT\STT voice denoise\test_M1_denoise.wav
+ ['실내 사람과 님이 더 이상 거리두기 거리두기 지침에 따라 이 자리는 비워 주세요']
+C:\nmb\nmb_data\STT\STT voice denoise\test_M2_denoise.wav
+ ['실내 가람과 2미터 이상 거리', '기침 안 따라 이 자리는 비워 줘']
+C:\nmb\nmb_data\STT\STT voice denoise\test_M3_denoise.wav
+ ['실내 사람 간이 m 이상 거리두기', '거리두기 지침에 따라 이 자리는 비워 주세요']
+C:\nmb\nmb_data\STT\STT voice denoise\test_M4_denoise.wav
+ ['실내 사람과 님이 더 이상 거리두기 거리두기 지침에 따라 이 자리는 비어 주소']
+C:\nmb\nmb_data\STT\STT voice denoise\test_M5_denoise.wav
+ ['실내 사람 간이 m 이상 거리', '거리두기 지침 했다', '이 자리는 비워 주세요']
+C:\nmb\nmb_data\STT\STT voice denoise\test_M6_denoise.wav
+ ['실내 사람과 님이 더 이상 거리두기 거리두기 지침에 따라 이 자리는 비워 줘']
+ '''

@@ -49,7 +49,7 @@ plt.xlabel('epoch')
 plt.legend(loc='upper right')
 
 
-plt.subplot(2,1,2) #(2행 2열 중 2번째)
+plt.subplot(2,1,2) #(2행 1열 중 2번째)
 plt.plot(hist.history['acc'],marker='.', c='red', label='acc') #metrics의 이름과 똑같이 넣기
 # 그림보면 갱신되는 점은 그대로 두고 뒤에 값 올라간 점은 없어도 된다. 
 plt.plot(hist.history['val_acc'],marker='.', c='blue', label='val_acc')
