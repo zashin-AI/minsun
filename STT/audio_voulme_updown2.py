@@ -11,7 +11,7 @@ from hanspell import spell_checker      # https://github.com/ssut/py-hanspell ì—
 import librosa.display
 import librosa
 
-path = "C:\\nmb\\nmb_data\\STT\\STT voice\\F_denoise\\106_003_0077_denoise.wav"
+path = "C:\\nmb\\nmb_data\\STT\\STT voice\\F_denoise\\156_003_1192_denoise.wav"
 outpath = "C:\\nmb\\nmb_data\\volume\\updown\\F_pred\\"
 
 list = [10,15,20,25,30]
