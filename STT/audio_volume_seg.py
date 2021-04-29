@@ -37,14 +37,10 @@ for j, path in enumerate(file_list) :
         # silence_thresh= thresh , 
         # # keep 200 ms of leading/trailing silence (음성의 앞, 뒤 갑자기 뚝! 끊기는 걸 방지하기 위한 기능인 것 같음)
         # keep_silence=200
-        
-        # min_silence_len= 200,
-        # silence_thresh= dbfs - 200,
-        # keep_silence= 400
 
         min_silence_len= 200,
-        silence_thresh= dbfs - 16 ,
-        keep_silence= 100
+        silence_thresh= dbfs - 200,
+        keep_silence= 400
     )
     # print(len(audio_chunks))
 
