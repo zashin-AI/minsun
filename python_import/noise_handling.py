@@ -32,6 +32,33 @@ def denoise_tim(
             512, 128, 512
         )
     '''
+    # for (path, dir, files) in os.walk(load_dir): # 하위 디렉토리와 파일 체크
+    #     for filename in files:
+    #         ext = os.path.splitext(filename)[-1] # 확장자명만을 취함
+    #         dir = os.path.join(out_dir, 'denoise')
+    #         if ext == '.wav':
+    #             try:
+    #                 if not os.path.exists(dir): # wav 파일인 경우 새 폴더 생성
+    #                     os.makedirs(dir)
+    #             except OSError :
+    #                     print("Failed to create directory!!!!!")
+    #                     raise
+    #         data, sr = librosa.load("%s/%s" % (path, filename)) # 파일 로드
+
+    #         noise_part = data[noise_min:noise_max] # 원본 데이터 시간만큼의 노이즈 생성
+
+    #         reduce_noise = nr.reduce_noise( # 노이즈 제거
+    #             audio_clip=data, 
+    #             noise_clip=noise_part,
+    #             n_fft=n_fft,
+    #             hop_length=hop_length,
+    #             win_length=win_length)
+
+    #         sf.write( out_dir + filename[:-4] + '_denoise.wav', data, sr) # 노이즈 제거 한 파일 생성
+    #         print("%s/%s" % (path, filename) + ' done') # 완료 된 경우에 출력
+
+
+
 
     for (path, dir, files) in os.walk(load_dir): # 하위 디렉토리와 파일 체크
         for filename in files:
@@ -58,3 +85,4 @@ def denoise_tim(
 
                 sf.write(out_dir + ext_dir + filename[:-4] + '_denoise.wav', data, sr) # 노이즈 제거 한 파일 생성
                 print("%s/%s" % (path, filename) + ' done') # 완료 된 경우에 출력
+

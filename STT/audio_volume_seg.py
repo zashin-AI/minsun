@@ -8,8 +8,8 @@ import librosa
 
 r = sr.Recognizer()
 
-file_list = librosa.util.find_files('C:\\nmb\\nmb_data\\volume\\normal\\', ext=['wav'])
-print(file_list)
+file_list = librosa.util.find_files('C:\\nmb\\nmb_data\\volume\\normal\\F_pred\\', ext=['wav'])
+# print(file_list)
 
 for j, path in enumerate(file_list) : 
 
@@ -38,8 +38,8 @@ for j, path in enumerate(file_list) :
         # keep_silence=200
 
         min_silence_len= 200,
-        silence_thresh= dbfs - 16 ,
-        keep_silence= 100
+        silence_thresh= dbfs - 100,
+        keep_silence= 300
     )
     # print(len(audio_chunks))
 
@@ -63,12 +63,16 @@ for j, path in enumerate(file_list) :
             # print(checked_sent)
 
             # full_txt.append(str(txt))
-            full_txt.append(str(checked_sent))
+            full_txt.append(str(checked_sent)) # 하나로 합칠 경우 사용
             # print(txt)
             # print(full_txt)
         except : # 너무 짧은 음성은 pass 됨 
             pass
-    print(path , '\n', full_txt)
+    print("파일 이름 : ",path[path.rfind('\\') + 1:])
+    # rfind를 사용하여 오른쪽부터 '\\'의 인덱스를 찾고, +1부터 문자열의 마지막까지 가져온다.
+    for checked_sent in full_txt:
+        print(checked_sent)
+    # print('\n')
 
 # 원본
 '''

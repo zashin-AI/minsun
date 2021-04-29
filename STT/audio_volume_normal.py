@@ -1,47 +1,36 @@
-# https://www.javaer101.com/ko/article/21996994.html
-
-from pydub import AudioSegment,effects
-import librosa, librosa.display
+from pydub import AudioSegment, effects
+import os,librosa, librosa.display
+import sys
+sys.path.append('c:/nmb/nada/python_import/')
+from volume_handling import volume_normal
 import matplotlib.pyplot as plt
 
-# def match_target_amplitude(sound, target_dBFS):
-#     change_in_dBFS = target_dBFS - sound.dBFS
-#     return sound.apply_gain(change_in_dBFS)
-
-# sound = AudioSegment.from_file("C:\\nmb\\nmb_data\\volume\\denoise\\", "wav")
-# normalized_sound = match_target_amplitude(sound, -20.0)
-# normalized_sound.export("C:\\nmb\\nmb_data\\volume\\up\\nomrmalizedAudio.wav", format="wav")
-
-# song = AudioSegment.from_wav('C:\\nmb\\nmb_data\\volume\\denoise\\F (12)_0_denoise.wav')
-
-# # reduce volume by 10 dB
-# song_10_db_quieter = song - 10
-
-# # but let's make him *very* quiet
-# song = song - 36
-
-# # save the output
-# song.export("C:\\nmb\\nmb_data\\volume\\down\\F (12)", "wav")
+origin_dir = 'C:\\nmb\\nmb_data\\STT\\STT voice\\F_denoise\\'
+out_dir = 'C:\\nmb\\nmb_data\\volume\\normal\\F_pred\\'
+volume_normal(origin_dir=origin_dir,out_dir=out_dir)
 
 
+# # 시각화
+# y1, sr1 = librosa.load('C:\\nmb\\nmb_data\\STT\\STT voice\\test_01.wav')
+# y2, sr2 = librosa.load('C:\\nmb\\nmb_data\\volume\\normal\\test_01_volume_normal.wav')
+# y3, sr3 = librosa.load('C:\\nmb\\nmb_data\\STT\\STT voice denoise\\test_01_denoise.wav')
+# y4, sr4 = librosa.load('C:\\nmb\\nmb_data\\volume\\normal\\test_01_denoise_volume_normal.wav')
 
-from pydub import AudioSegment, effects  
+# plt.figure(figsize=(16,8))
+# plt.subplot(4,2,1)
+# librosa.display.waveplot(y=y1, sr=sr1)
+# plt.title('origin')
 
-rawsound = AudioSegment.from_file("C:\\nmb\\nmb_data\\volume\\denoise\\friendvoice_F4_denoise.wav", "wav")  
-normalizedsound = effects.normalize(rawsound)  
-normalizedsound.export("C:\\nmb\\nmb_data\\volume\\normal\\friendvoice_F4_normal.wav", format="wav")
+# plt.subplot(4,2,2)
+# librosa.display.waveplot(y=y2, sr=sr2)
+# plt.title('origin_normal')
 
+# plt.subplot(4,2,5)
+# librosa.display.waveplot(y=y3, sr=sr3)
+# plt.title('denoise')
 
-y1, sr1 = librosa.load('C:\\nmb\\nmb_data\\volume\\denoise\\friendvoice_F4_denoise.wav')
-y2, sr2 = librosa.load('C:\\nmb\\nmb_data\\volume\\normal\\friendvoice_F4_normal.wav')
+# plt.subplot(4,2,6)
+# librosa.display.waveplot(y=y4, sr=sr4)
+# plt.title('denoise_normal')
 
-plt.figure(figsize=(16, 6))
-plt.subplot(4,1,1)
-librosa.display.waveplot(y=y1, sr=sr1)
-plt.title('denoise')
-
-plt.subplot(4,1,3)
-librosa.display.waveplot(y=y2, sr=sr2)
-plt.title('nomal')
-
-plt.show()
+# plt.show()
