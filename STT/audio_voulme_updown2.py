@@ -11,8 +11,8 @@ from hanspell import spell_checker      # https://github.com/ssut/py-hanspell ì—
 import librosa.display
 import librosa
 
-path = "C:\\nmb\\nmb_data\\STT\\STT voice\\F_denoise\\156_003_1192_denoise.wav"
-outpath = "C:\\nmb\\nmb_data\\volume\\updown\\F_pred\\"
+path = "C:\\nmb\\nmb_data\\STT\\STT voice\\M_denoise\\112_003_0107_denoise.wav"
+outpath = "C:\\nmb\\nmb_data\\volume\\updown\\M_pred\\"
 
 list = [10,15,20,25,30]
 for i in list:
@@ -22,7 +22,7 @@ for i in list:
 #=================================================================================
 r = sr.Recognizer()
 
-file_list = librosa.util.find_files('C:\\nmb\\nmb_data\\volume\\updown\\F_pred\\', ext=['wav'])
+file_list = librosa.util.find_files('C:\\nmb\\nmb_data\\volume\\updown\\M_pred\\', ext=['wav'])
 print(file_list)
 
 for j, path in enumerate(file_list) : 
