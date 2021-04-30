@@ -11,18 +11,18 @@ from hanspell import spell_checker      # https://github.com/ssut/py-hanspell �
 import librosa.display
 import librosa
 
-path = "C:\\nmb\\nmb_data\\STT\\STT voice\\M_denoise\\112_003_0107_denoise.wav"
-outpath = "C:\\nmb\\nmb_data\\volume\\updown\\M_pred\\"
+# path = "C:\\nmb\\nmb_data\\STT\\STT voice\\M_denoise\\112_003_0107_denoise.wav"
+# outpath = "C:\\nmb\\nmb_data\\volume\\updown\\M_pred\\"
 
-list = [10,15,20,25,30]
-for i in list:
-    volume = int(i)
-    volume_updown(path=path, volume=volume, outpath=outpath)
+# list = [10,15,20,25,30]
+# for i in list:
+#     volume = int(i)
+#     volume_updown(path=path, volume=volume, outpath=outpath)
 
 #=================================================================================
 r = sr.Recognizer()
 
-file_list = librosa.util.find_files('C:\\nmb\\nmb_data\\volume\\updown\\M_pred\\', ext=['wav'])
+file_list = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\STT voice\\M_denoise\\1_file\\', ext=['wav'])
 print(file_list)
 
 for j, path in enumerate(file_list) : 
@@ -50,7 +50,7 @@ for j, path in enumerate(file_list) :
         # # keep 200 ms of leading/trailing silence (음성의 앞, 뒤 갑자기 뚝! 끊기는 걸 방지하기 위한 기능인 것 같음)
         # keep_silence=200
 
-        min_silence_len= 200,
+        min_silence_len= 100,
         silence_thresh= dbfs - 100,
         keep_silence= 300
     )

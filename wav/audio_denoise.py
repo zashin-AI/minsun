@@ -5,7 +5,7 @@ sys.path.append('c:/nmb/nada/python_import/')
 from noise_handling import denoise_tim
 
 denoise_tim(
-    load_dir = 'C:\\nmb\\nmb_data\\STT\\STT voice\\M_pred\\',
+    load_dir = 'C:\\nmb\\nmb_data\\STT\\STT voice\\M_wav\\M_1_file\\',
     out_dir = 'C:\\nmb\\nmb_data\\STT\\STT voice\\',
     noise_min = 5000,
     noise_max = 15000,

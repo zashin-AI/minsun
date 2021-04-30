@@ -16,21 +16,23 @@ from voice_handling import voice_sum
 # out_dir(wav파일을 합쳐서 저장할 경로+파일명까지) = "C:/nmb/nmb_data/combine_test/F3_sum.wav"
 
 # # 1) wav일 때
-for i in range(5,7):
-    filename = f'fz0{i}'
-    path_wav = 'C:\\nmb\\nmb_data\\audio_data\\korea_corpus\\F\\'+ filename + '\\'
-    path_out = 'C:\\nmb\\nmb_data\\audio_sum\\korea_corpus_f_sum\\' + filename + '.wav'
+a = ['6rmA7IKw7ZWY','6rmA7JiB7ZWY', '6rmA7KCV7ZiE','107','112','114','117','118','120','125']
+for i in a:
+    filename = f'{i}'
+    path_wav = 'C:\\nmb\\nmb_data\\STT\\STT voice\\M_wav\\'+ filename + '\\'
+    path_out = 'C:\\nmb\\nmb_data\\STT\\STT voice\\M_sum\\' + filename + '.wav'
     voice_sum(form='wav', audio_dir=path_wav, save_dir=None, out_dir=path_out)
 
 
 # 2) flac일 때
 
 # for i in range(1,11):
-#     filename = f'F ({i})'
+#     # filename = f'F ({i})'
+#     filename = '6rmA7IKw7ZWY'
 
-#     path_flac = 'C:\\nmb\\nmb_data\\audio_data\\pansori\\F\\'+ filename + '\\'
-#     path_save = 'C:\\nmb\\nmb_data\\audio_sum\\save_wav\\pansori_f\\'+ filename + '\\'
-#     path_out = 'C:\\nmb\\nmb_data\\audio_sum\\pansori_f_sum\\' + filename + '.wav'
+#     path_flac = 'C:\\nmb\\nmb_data\\STT\\STT voice\\M\\'+ filename + '\\'
+#     path_save = 'C:\\nmb\\nmb_data\\STT\\STT voice\\M\\M_wav\\'+ filename + '\\'
+#     path_out = 'C:\\nmb\\nmb_data\\STT\\STT voice\\M\\M_sum\\' + filename + '.wav'
 #     voice_sum(form='flac', audio_dir=path_flac, save_dir=path_save, out_dir=path_out)
 
 
