@@ -10,7 +10,7 @@ r = sr.Recognizer()
 
 # file_list = librosa.util.find_files('C:\\nmb\\nmb_data\\volume\\normal\\F_pred\\', ext=['wav'])
 # print(file_list)
-file_list = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\STT voice\\F_pred', ext=['wav'])
+file_list = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\STT voice\\M_normal\\slow', ext=['wav'])
 
 for j, path in enumerate(file_list) : 
 
@@ -38,15 +38,15 @@ for j, path in enumerate(file_list) :
         # # keep 200 ms of leading/trailing silence (음성의 앞, 뒤 갑자기 뚝! 끊기는 걸 방지하기 위한 기능인 것 같음)
         # keep_silence=200
 
-        # 기본
-        min_silence_len= 200,
-        silence_thresh= dbfs - 16,
-        keep_silence= 100
+        # # 기본
+        # min_silence_len= 200,
+        # silence_thresh= dbfs - 16,
+        # keep_silence= 100
 
         # 변경
-        # min_silence_len= 200,
-        # silence_thresh= dbfs - 100,
-        # keep_silence= 300
+        min_silence_len= 200,
+        silence_thresh= dbfs - 100,
+        keep_silence= 300
     )
     # print(len(audio_chunks))
 

@@ -22,7 +22,7 @@ import librosa
 #=================================================================================
 r = sr.Recognizer()
 
-file_list = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\STT voice\\M_denoise\\1_file\\', ext=['wav'])
+file_list = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\STT voice\\M_denoise\\sum\\', ext=['wav'])
 print(file_list)
 
 for j, path in enumerate(file_list) : 
