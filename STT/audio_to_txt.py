@@ -9,12 +9,12 @@ import librosa
 r = sr.Recognizer()
 
 
-file_list = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\STT_F_pred\\F_denoise\\1_file\\', ext=['wav'])
-volume_list = librosa.util.find_files('C:\\nmb\\nmb_data\\volume\\normal\\F_pred\\', ext=['wav'])
-speed_list = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\STT_F_pred\\slow\\', ext=['wav'])
+origin_file = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\STT_F_pred\\F_denoise\\1_file\\', ext=['wav'])
+volume_file = librosa.util.find_files('C:\\nmb\\nmb_data\\volume\\normal\\F_pred\\', ext=['wav'])
+speed_file = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\STT_F_pred\\slow\\', ext=['wav'])
 
 origin = []
-for j, path in enumerate(file_list) : 
+for j, path in enumerate(origin_file) : 
     sound_file = AudioSegment.from_wav(path)
     dbfs = sound_file.dBFS
     thresh = int(dbfs)
@@ -43,7 +43,7 @@ for j, path in enumerate(file_list) :
 print('원본 : ',origin)
 
 volume = []
-for j, path in enumerate(file_list) : 
+for j, path in enumerate(volume_file) : 
     sound_file = AudioSegment.from_wav(path)
     dbfs = sound_file.dBFS
     thresh = int(dbfs)
@@ -72,7 +72,7 @@ for j, path in enumerate(file_list) :
 print('볼륨 : ', volume)
 
 speed = []
-for j, path in enumerate(speed_list) : 
+for j, path in enumerate(speed_file) : 
     sound_file = AudioSegment.from_wav(path)
     dbfs = sound_file.dBFS
     thresh = int(dbfs)
@@ -99,7 +99,6 @@ for j, path in enumerate(speed_list) :
             pass   
         speed.append(checked_sent)
 print('속도 : ', speed)
-print(len(speed))
 
 
 # #----------------------------------------------------------------------
