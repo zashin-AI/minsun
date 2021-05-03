@@ -19,13 +19,13 @@ def speed_change(sound, speed=1.0):
     return sound_with_altered_frame_rate.set_frame_rate(sound.frame_rate)
 
 
-file_list = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\STT voice\\M_normal\\1_file\\', ext=['wav'])
+file_list = librosa.util.find_files('C:\\nmb\\nmb_data\\volume\\normal\\F_pred', ext=['wav'])
 for i, sound in enumerate(file_list) : 
     # print(sound)
     name = os.path.basename(sound)
     # print(name)
     sound = AudioSegment.from_file(sound)
-    out_file = "C:\\nmb\\nmb_data\\STT\\STT voice\\M_normal\\slow\\"+ str(name) + "_slow.wav"
+    out_file = "C:\\nmb\\nmb_data\\STT\\STT_F_pred\\slow\\"+ str(name) + "_slow.wav"
     slow_sound = speed_change(sound, 0.90)
     slow_sound.export(out_file, format="wav")
     # fast_sound = speed_change(sound, 2.0)

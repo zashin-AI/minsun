@@ -8,9 +8,9 @@ import librosa
 
 r = sr.Recognizer()
 
-# file_list = librosa.util.find_files('C:\\nmb\\nmb_data\\volume\\normal\\F_pred\\', ext=['wav'])
+file_list = librosa.util.find_files('C:\\nmb\\nmb_data\\volume\\normal\\F_pred\\', ext=['wav'])
 # print(file_list)
-file_list = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\STT voice\\M_normal\\slow', ext=['wav'])
+# file_list = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\STT voice\\M_normal\\slow', ext=['wav'])
 
 for j, path in enumerate(file_list) : 
 
