@@ -19,7 +19,7 @@ r = sr.Recognizer()
 # file_list = librosa.util.find_files('E:\\nmb\\nmb_data\\predict\\stt_denoise\\denoise', ext=['wav'])
 
 # slow
-file_list = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\STT voice denoise\\', ext=['wav'])
+file_list = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\mindslab\\split2m\\1\\', ext=['wav'])
 print(file_list)
 
 for j, path in enumerate(file_list) : 
@@ -79,6 +79,9 @@ for j, path in enumerate(file_list) :
         except : # 너무 짧은 음성은 pass 됨 
             pass
     print(path , '\n', full_txt)
+
+    with open('C:\\nmb\\nmb_data\\STT\\mindslab_1.txt', 'wt') as f: f.writelines(checked_sent)        
+
 '''   
 C:\nmb\nmb_data\STT\STT voice denoise\test_01_denoise.wav
  ['하루 확진자가 오늘로 나흘째 600명 때에 머물고 있습니다', '하지만 이스라엘은 사실상 집단면역 선언', '오늘부터 야외에서 마스크를 벗고 있습니다 JTBC 취재팀이 직접 이스라엘로 날아갔는데 잠시 후 상지 연
