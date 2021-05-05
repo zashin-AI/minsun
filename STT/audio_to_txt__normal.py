@@ -8,8 +8,10 @@ import librosa
 
 r = sr.Recognizer()
 
-volume_file = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\mindslab\\normal\\', ext=['wav'])
+# volume_file = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\corpus\\normal\\', ext=['wav'])
+volume_file = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\STT_M_pred\\M_normal\\1_file\\', ext=['wav'])
 
+path_list = []
 volume = []
 for j, path in enumerate(volume_file) : 
     sound_file = AudioSegment.from_wav(path)
@@ -22,6 +24,8 @@ for j, path in enumerate(volume_file) :
         silence_thresh= dbfs - 16,
         keep_silence= 300
     )
+    path_list.append(path)
+
     full_txt = []
     for i, chunk in enumerate(audio_chunks):    
         out_file = "C:\\nmb\\nmb_data\\chunk\\test\\"+ str(j) + f"chunk{i}.wav"
@@ -36,7 +40,10 @@ for j, path in enumerate(volume_file) :
             full_txt.append(str(checked_sent)) # 하나로 합칠 경우 사용
         except : # 너무 짧은 음성은 pass 됨 
             pass   
-        volume.append(checked_sent)
+        print(checked_sent)
+        volume.append(checked_sent)  
+    
+print(path_list)
 print('볼륨 : ', volume)
 
 
@@ -47,13 +54,18 @@ print('볼륨 : ', volume)
 # # 코드:{};비용:{}; 형태의 템플릿으로 저장할 문자열 리스트를 생성
 # with open('C:\\nmb\\nmb_data\\STT\\test.txt', 'wt') as f: f.writelines(lines) 
 
-pairs = [volume] 
+
+for k in range(len(path_list)) :
+    path_list[k]
 
 new = ''
-for i in range(len(pairs[0])):
-    new += '볼륨(normal) : ' + pairs[0][i] +'\n\n'
+for i in range(len(volume)):
+    new += volume[i] + '\n'
 
-with open('C:\\nmb\\nmb_data\\STT\\corpus_normal.txt', 'wt') as f: f.writelines(new)        
+new_sum = path_list[k] + checked_sent
+
+with open('C:\\nmb\\nmb_data\\STT\\text_test.txt', 'wt') as f:
+     f.writelines(new_sum)        
 
 
 
