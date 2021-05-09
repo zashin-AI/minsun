@@ -20,9 +20,9 @@ for j, path in enumerate(volume_file) :
     if dbfs < thresh :
         thresh = thresh - 1
     audio_chunks = split_on_silence(sound_file,  
-        min_silence_len= 500,
-        silence_thresh= dbfs - 16,
-        keep_silence= 300
+        min_silence_len= 300,
+        silence_thresh= dbfs - 20,
+        keep_silence= 500
     )
     path_list.append(path)
 
@@ -55,10 +55,10 @@ print('볼륨 : ', volume)
 # with open('C:\\nmb\\nmb_data\\STT\\test.txt', 'wt') as f: f.writelines(lines) 
 
 new = ''
-for i in range(len(volume)):
+for i in range(volume):
     new += volume[i] + '\n'
 
-with open('C:\\nmb\\nmb_data\\STT\\test2\\text_test2.txt', 'wt') as f:
+with open('C:\\nmb\\nmb_data\\STT\\test2\\test2_300_20_500.txt', 'wt') as f:
      f.writelines(new)        
 
 
