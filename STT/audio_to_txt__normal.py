@@ -9,7 +9,7 @@ import librosa
 r = sr.Recognizer()
 
 # volume_file = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\corpus\\normal\\', ext=['wav'])
-volume_file = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\STT_M_pred\\M_normal\\1_file\\', ext=['wav'])
+volume_file = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\test2\\', ext=['wav'])
 
 path_list = []
 volume = []
@@ -54,18 +54,12 @@ print('볼륨 : ', volume)
 # # 코드:{};비용:{}; 형태의 템플릿으로 저장할 문자열 리스트를 생성
 # with open('C:\\nmb\\nmb_data\\STT\\test.txt', 'wt') as f: f.writelines(lines) 
 
-
-for k in range(len(path_list)) :
-    path_list[k]
-
 new = ''
 for i in range(len(volume)):
     new += volume[i] + '\n'
 
-new_sum = path_list[k] + checked_sent
-
-with open('C:\\nmb\\nmb_data\\STT\\text_test.txt', 'wt') as f:
-     f.writelines(new_sum)        
+with open('C:\\nmb\\nmb_data\\STT\\test2\\text_test2.txt', 'wt') as f:
+     f.writelines(new)        
 
 
 
