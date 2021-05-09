@@ -8,7 +8,7 @@ import librosa
 
 r = sr.Recognizer()
 
-file_list = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\mindslab\\split2m\\1\\', ext=['wav'])
+file_list = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\test2\\', ext=['wav'])
 
 for j, path in enumerate(file_list) : 
 
@@ -19,9 +19,9 @@ for j, path in enumerate(file_list) :
         thresh = thresh - 1
     audio_chunks = split_on_silence(sound_file,  
         # 변경
-        min_silence_len= 500,
+        min_silence_len= 1000,
         silence_thresh= dbfs - 16,
-        keep_silence= 100
+        keep_silence= 500
     )
     full_txt = []
     for i, chunk in enumerate(audio_chunks):    
@@ -42,7 +42,7 @@ for j, path in enumerate(file_list) :
     for checked_sent in full_txt:
         print(checked_sent)
 
-with open('C:\\nmb\\nmb_data\\STT\\mindslab_1.txt', 'wt') as f: f.writelines(checked_sent)        
+with open('C:\\nmb\\nmb_data\\STT\\test2\\test2_1000_16_500.txt', 'wt') as f: f.writelines(checked_sent)        
 
 
 # 원본
