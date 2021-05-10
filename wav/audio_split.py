@@ -20,9 +20,9 @@ from voice_handling import voice_split, voice_split_m
 
 # for i in range(1, 19):
 filename = 'un4qbATrmx8_denoise'
-origin_dir = 'C:\\nmb\\nmb_data\\STT\\mindslab\\denoise\\'+ filename + '.wav'
+origin_dir = 'C:\\nmb\\nmb_data\\STT\\test2\\'+ filename + '.wav'
 threshold = 120000 # 몇초씩 자를 것인지 설정
-out_dir = 'C:\\nmb\\nmb_data\\STT\\mindslab\\split2m\\'
+out_dir = 'C:\\nmb\\nmb_data\\STT\\test2\\2m\\'
 end_threshold = 300000 # 끝나는 지점(2분)
 voice_split_m(origin_dir=origin_dir, threshold=threshold, end_threshold =end_threshold,out_dir=out_dir)
 
