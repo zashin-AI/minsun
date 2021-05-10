@@ -10,6 +10,7 @@ from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau, TensorB
 from tensorflow.python.keras.callbacks import ModelCheckpoint
 import os
 from tensorflow.keras.optimizers import Adadelta, Adam, Nadam, RMSprop
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
 
 
@@ -26,6 +27,11 @@ print(x.shape, y.shape)
 # (4536, 128, 862) (4536,)
 print(x_train.shape, y_train.shape) # (3628, 128, 862) (3628,)
 print(x_test.shape, y_test.shape)   # (908, 128, 862) (908,)
+
+scaler = MinMaxScaler()
+scaler.fit(x_train)
+x_train = scaler.transform(x_train)
+x_test = scaler.transform(x_test)
 
 # 모델 구성
 model = Sequential()
@@ -101,15 +107,18 @@ for pred_pathAudio in pred :
         mels = librosa.feature.melspectrogram(y, sr=sr, hop_length=128, n_fft=512)
         pred_mels = librosa.amplitude_to_db(mels, ref=np.max)
         pred_mels = pred_mels.reshape(1, pred_mels.shape[0], pred_mels.shape[1])
+        pred_mels = scaler.transform()
+        print(pred_mels.shape)
+
         y_pred = model.predict(pred_mels)
-        y_pred_label = np.argmax(y_pred)
-        if y_pred_label == 0 :  # 여성이라고 예측
-            print(file,'{:.4f} %의 확률로 여자입니다.'.format((y_pred[0][0])*100))                 
-            count_f = count_f + 1
-                
-        else:                   # 남성이라고 예측              
-            print(file,'{:.4f} %의 확률로 남자입니다.'.format((y_pred[0][1])*100))
-            count_m = count_m + 1
+        if y_pred == 0:   # 여성이라고 예측
+            print(file, '여자입니다.')
+            if name == 'F' :
+                count_f = count_f + 1
+        else:                   # 남성이라고 예측
+            print(file, '남자입니다.')
+            if name == 'M' :
+                count_m = count_m + 1
                 
                     
 print("43개 여성 목소리 중 "+str(count_f)+"개 정답")
