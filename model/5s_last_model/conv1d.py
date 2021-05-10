@@ -37,7 +37,6 @@ x_test = scaler.transform(x_test)
 model = Sequential()
 
 def residual_block(x, filters, conv_num=3, activation="relu"):
-    # Shortcut
     s = Conv1D(filters, 1, padding="same")(x)
     for i in range(conv_num - 1):
         x = Conv1D(filters, 3, padding="same")(x)
@@ -69,6 +68,8 @@ def build_model(input_shape, num_classes):
 model = build_model(x_train.shape[1:], 2)
 
 model.summary()
+
+model.save('C:/nmb/nmb_data/h5/5s_last/model_Conv1D_adam.h5')
 
 start = datetime.now()
 
