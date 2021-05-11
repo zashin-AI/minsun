@@ -10,7 +10,7 @@ from datetime import datetime
 r = sr.Recognizer()
 
 
-origin_file = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\test2\\', ext=['wav'])
+origin_file = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\5s_last_test\\', ext=['wav'])
 
 file_list = [origin_file]
 
@@ -29,9 +29,9 @@ for k in file_list:
         if dbfs < thresh :
             thresh = thresh - 1
         audio_chunks = split_on_silence(sound_file,
-            min_silence_len= 1000,
+            min_silence_len= 800,
             silence_thresh= dbfs - 16,
-            keep_silence= 500
+            keep_silence= 700
         )
         full_txt = []
         for i, chunk in enumerate(audio_chunks):    
@@ -44,6 +44,7 @@ for k in file_list:
                 txt = r.recognize_google(audio, language="ko-KR")
                 spelled_sent = spell_checker.check(txt)
                 checked_sent = spelled_sent.checked
+                print(checked_sent)
                 full_txt.append(str(checked_sent)) # 하나로 합칠 경우 사용
             except : # 너무 짧은 음성은 pass 됨 
                 pass   
@@ -54,12 +55,18 @@ for k in file_list:
     a += 1
     print('길이 : ',len(b))
 
+# #----------------------------------------------------------------------
+
+# pairs = dict(zip(origin, speed))        # key=value 형태로 dict 를 생성
+# lines = map(lambda item:'원본 :{}\n 볼륨 :{}\n'.format(item[0], item[1]), pairs.items())       
+# # 코드:{};비용:{}; 형태의 템플릿으로 저장할 문자열 리스트를 생성
+# with open('C:\\nmb\\nmb_data\\STT\\test.txt', 'wt') as f: f.writelines(lines) 
 
 new = ''
 for i in range(len(pairs[0])):
     new += pairs[0][i] + '\n\n'
 
-with open('C:\\nmb\\nmb_data\\STT\\test2\\corpus_1000_16_500.txt', 'wt') as f: f.writelines(new)        
+with open('C:\\nmb\\nmb_data\\STT\\5s_last_test\\800_16_700.txt', 'wt') as f: f.writelines(new)        
 
 end = datetime.now()
 

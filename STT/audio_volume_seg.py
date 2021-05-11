@@ -8,8 +8,9 @@ import librosa
 
 r = sr.Recognizer()
 
-file_list = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\test2\\', ext=['wav'])
+file_list = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\corpus\\noise\\', ext=['wav'])
 
+full_txt =[]
 for j, path in enumerate(file_list) : 
 
     sound_file = AudioSegment.from_wav(path)
@@ -42,7 +43,7 @@ for j, path in enumerate(file_list) :
     for checked_sent in full_txt:
         print(checked_sent)
 
-with open('C:\\nmb\\nmb_data\\STT\\test2\\test2_1000_16_500.txt', 'wt') as f: f.writelines(checked_sent)        
+with open('C:\\nmb\\nmb_data\\STT\\noise_1000_16_500.txt', 'wt') as f: f.writelines(full_txt)        
 
 
 # 원본
