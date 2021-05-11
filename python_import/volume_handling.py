@@ -4,7 +4,7 @@ import os, librosa
 def volume_normal(origin_dir, out_dir):
     '''
     Args :
-        origin_dir : 불러올 wav파일이 있는 경로
+        origin_dir : wav파일이 있는 경로
         out_dir : 오디오 볼륨을 정규화 시킨 파일 저장 경로
     '''
     origin_dir = librosa.util.find_files(origin_dir, ext=['wav'])
