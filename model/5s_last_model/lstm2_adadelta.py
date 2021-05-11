@@ -81,17 +81,17 @@ batch_size = 32
 model.compile(optimizer=op, loss="sparse_categorical_crossentropy", metrics=['acc'])
 es = EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True, verbose=1)
 lr = ReduceLROnPlateau(monitor='val_loss', vactor=0.5, patience=10, verbose=1)
-path = 'C:/nmb/nmb_data/h5/5s_last/lstm2_rms_mms.h5'
+path = 'C:/nmb/nmb_data/h5/5s_last/lstm2_adadelta_mms.h5'
 mc = ModelCheckpoint(path, monitor='val_loss', verbose=1, save_best_only=True)
-tb = TensorBoard(log_dir='C:/nmb/nmb_data/graph/'+ 'lstm2_rms_mms' + "/",histogram_freq=0, write_graph=True, write_images=True)
+tb = TensorBoard(log_dir='C:/nmb/nmb_data/graph/'+ 'lstm2_adadelta_mms' + "/",histogram_freq=0, write_graph=True, write_images=True)
 history = model.fit(x_train, y_train, epochs=5000, batch_size=batch_size, validation_split=0.2, callbacks=[es, lr, mc, tb])
 
 
 # 평가, 예측
-model.load_weights('C:/nmb/nmb_data/h5/5s_last/lstm2_rms_mms.h5')
+model.load_weights('C:/nmb/nmb_data/h5/5s_last/lstm2_adadelta_mms.h5')
 result = model.evaluate(x_test, y_test, batch_size=batch_size)
 print("loss : {:.5f}".format(result[0]))
-print("acc : {:.5f}".format(result[1]))
+print("acc : {:.5f}".format(result[1]), '\n')
 
 ############################################ PREDICT ####################################
 pred = ['C:/nmb/nmb_data/predict/5s_last/F','C:/nmb/nmb_data/predict/5s_last/M']
@@ -123,11 +123,11 @@ for pred_pathAudio in pred :
         # print(y_pred_label)
 
         if y_pred_label == 0:   # 여성이라고 예측
-            print(file[file.rfind('\\') + 1 :], '여자입니다.')
+            # print(file[file.rfind('\\') + 1 :], '여자입니다.')
             if name == 'F' :
                 count_f += 1
         else:                   # 남성이라고 예측
-            print(file[file.rfind('\\') + 1 :], '남자입니다.')
+            # print(file[file.rfind('\\') + 1 :], '남자입니다.')
             if name == 'M' :
                 count_m += 1
                 
