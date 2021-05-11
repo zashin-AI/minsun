@@ -5,8 +5,8 @@ sys.path.append('c:/nmb/nada/python_import/')
 from noise_handling import denoise_tim_data, denoise_tim_reduce
 
 denoise_tim_data(
-    load_dir = 'C:\\nmb\\nmb_data\\STT\\slr_origin\\',
-    out_dir = 'C:\\nmb\\nmb_data\\STT\\slr_denoise\\',
+    load_dir = 'C:\\nmb\\nmb_data\\STT\\P_SUM\\',
+    out_dir = 'C:\\nmb\\nmb_data\\STT\\P_DATA\\',
     noise_min = 5000,
     noise_max = 15000,
     n_fft = 512,
@@ -15,8 +15,8 @@ denoise_tim_data(
 )
 
 denoise_tim_reduce(
-    load_dir = 'C:\\nmb\\nmb_data\\STT\\slr_origin\\',
-    out_dir = 'C:\\nmb\\nmb_data\\STT\\slr_reduce\\',
+    load_dir = 'C:\\nmb\\nmb_data\\STT\\P_SUM\\',
+    out_dir = 'C:\\nmb\\nmb_data\\STT\\P_REDUCE\\',
     noise_min = 5000,
     noise_max = 15000,
     n_fft = 512,
