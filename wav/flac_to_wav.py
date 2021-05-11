@@ -4,8 +4,8 @@ import soundfile as sf
 import os
 
 
-audio_dir = 'C:\\nmb\\nmb_data\\STT\\STT voice\\남자 파일 1개\\'
-save_dir =  'C:\\nmb\\nmb_data\\STT\\STT voice\\M_wav\\남자 파일 1개\\'
+audio_dir = 'C:\\nmb\\nmb_data\\STT\\P\\'
+save_dir =  'C:\\nmb\\nmb_data\\STT\\P_WAV\\'
 
 def flac_to_wav(form, audio_dir, save_dir):
     if form =='flac':

@@ -10,7 +10,7 @@ from datetime import datetime
 r = sr.Recognizer()
 
 
-origin_file = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\corpus\\noise\\', ext=['wav'])
+origin_file = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\slr\\', ext=['wav'])
 volume_file = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\corpus\\normal\\', ext=['wav'])
 speed_file = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\corpus\\slow\\', ext=['wav'])
 
