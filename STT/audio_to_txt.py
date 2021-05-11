@@ -29,8 +29,8 @@ for k in file_list:
         if dbfs < thresh :
             thresh = thresh - 1
         audio_chunks = split_on_silence(sound_file,
-            min_silence_len= 2000,
-            silence_thresh= dbfs - 1,
+            min_silence_len= 500,
+            silence_thresh= dbfs - 15,
             keep_silence= 700
         )
         full_txt = []

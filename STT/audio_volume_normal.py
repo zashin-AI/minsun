@@ -5,8 +5,8 @@ sys.path.append('c:/nmb/nada/python_import/')
 from volume_handling import volume_normal
 import matplotlib.pyplot as plt
 
-origin_dir = 'C:\\nmb\\nmb_data\\STT\\corpus\\noise\\'
-out_dir = 'C:\\nmb\\nmb_data\\STT\\corpus\\normal\\'
+origin_dir = 'C:\\nmb\\nmb_data\\STT\\P_SUM\\'
+out_dir = 'C:\\nmb\\nmb_data\\STT\\P_NORMAL\\'
 volume_normal(origin_dir=origin_dir,out_dir=out_dir)
 
 

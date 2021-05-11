@@ -73,24 +73,24 @@ model = build_model(x_train.shape[1:], 2)
 
 model.summary()
 
-model.save('C:/nmb/nmb_data/h5/5s_last/model_Conv1D_RMS_mms.h5')
+model.save('C:/nmb/nmb_data/h5/5s_last/model_Conv1D_adadelta_mms.h5')
 
 start = datetime.now()
 
-op = RMSprop(lr=0.001)
+op = Adadelta(lr=0.001)
 batch_size = 32
 
 model.compile(optimizer=op, loss="sparse_categorical_crossentropy", metrics=['acc'])
 es = EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True, verbose=1)
 lr = ReduceLROnPlateau(monitor='val_loss', vactor=0.5, patience=10, verbose=1)
-path = 'C:/nmb/nmb_data/h5/5s_last/Conv1D_RMS_mms.h5'
+path = 'C:/nmb/nmb_data/h5/5s_last/Conv1D_adadelta_mms.h5'
 mc = ModelCheckpoint(path, monitor='val_loss', verbose=1, save_best_only=True)
-tb = TensorBoard(log_dir='C:/nmb/nmb_data/graph/'+ 'Conv1D_RMS_mms' + "/",histogram_freq=0, write_graph=True, write_images=True)
+tb = TensorBoard(log_dir='C:/nmb/nmb_data/graph/'+ 'Conv1D_adadelta_mms' + "/",histogram_freq=0, write_graph=True, write_images=True)
 history = model.fit(x_train, y_train, epochs=5000, batch_size=batch_size, validation_split=0.2, callbacks=[es, lr, mc, tb])
 
 
 # 평가, 예측
-model.load_weights('C:/nmb/nmb_data/h5/5s_last/Conv1D_RMS_mms.h5')
+model.load_weights('C:/nmb/nmb_data/h5/5s_last/Conv1D_adadelta_mms.h5')
 result = model.evaluate(x_test, y_test, batch_size=batch_size)
 print("loss : {:.5f}".format(result[0]))
 print("acc : {:.5f}".format(result[1]))
@@ -142,8 +142,8 @@ end = datetime.now()
 time = end - start
 print("작업 시간 : " , time) 
 
-# loss : 0.09003
+# loss : 0.08305
 # acc : 0.96476
-# 43개 여성 목소리 중 39개 정답
+# 43개 여성 목소리 중 41개 정답
 # 43개 남성 목소리 중 40개 정답
-# 작업 시간 :  0:01:05.719042
+# 작업 시간 :  0:04:57.401444
