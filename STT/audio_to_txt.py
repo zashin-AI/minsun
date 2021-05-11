@@ -10,7 +10,7 @@ from datetime import datetime
 r = sr.Recognizer()
 
 
-origin_file = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\P_NORMAL\\', ext=['wav'])
+origin_file = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\STT_M_pred\\M_normal\\1_file\\', ext=['wav'])
 
 file_list = [origin_file]
 
@@ -28,11 +28,11 @@ for k in file_list:
         thresh = int(dbfs)
         if dbfs < thresh :
             thresh = thresh - 1
-        audio_chunks = split_on_silence(sound_file,
-            min_silence_len= 500,
-            silence_thresh= dbfs - 15,
-            keep_silence= 700
-        )
+        audio_chunks = split_on_silence(sound_file,  
+        min_silence_len= 2000,
+        silence_thresh= dbfs - 30,
+        keep_silence= 1000)
+
         full_txt = []
         for i, chunk in enumerate(audio_chunks):    
             out_file = "C:\\nmb\\nmb_data\\chunk\\test\\"+ str(j) + f"chunk{i}.wav"
@@ -44,7 +44,6 @@ for k in file_list:
                 txt = r.recognize_google(audio, language="ko-KR")
                 spelled_sent = spell_checker.check(txt)
                 checked_sent = spelled_sent.checked
-                print(checked_sent)
                 full_txt.append(str(checked_sent)) # 하나로 합칠 경우 사용
             except : # 너무 짧은 음성은 pass 됨 
                 pass   
@@ -66,7 +65,7 @@ new = ''
 for i in range(len(pairs[0])):
     new += pairs[0][i] + '\n\n'
 
-with open('C:\\nmb\\nmb_data\\STT\\P_NORMAL.txt', 'wt') as f: f.writelines(new)        
+with open('C:\\nmb\\nmb_data\\STT\\PPT모음.txt', 'wt') as f: f.writelines(new)        
 
 end = datetime.now()
 
