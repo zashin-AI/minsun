@@ -5,7 +5,7 @@ sys.path.append('c:/nmb/nada/python_import/')
 from volume_handling import volume_updown
 import matplotlib.pyplot as plt
 
-path = 'C:\\nmb\\nmb_data\\STT\\PPT\\117_003_0012.wav'
+path = 'C:\\nmb\\nmb_data\\STT\\PPT\\112_003_0107.wav'
 outpath = 'C:\\nmb\\nmb_data\\STT\\PPT_VOL\\'
 volume = 15
 

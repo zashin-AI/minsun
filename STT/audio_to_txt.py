@@ -10,7 +10,7 @@ from datetime import datetime
 r = sr.Recognizer()
 
 
-origin_file = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\STT_M_pred\\M_normal\\1_file\\', ext=['wav'])
+origin_file = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\PPT_VOL\\', ext=['wav'])
 
 file_list = [origin_file]
 
