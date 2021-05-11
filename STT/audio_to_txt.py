@@ -10,7 +10,7 @@ from datetime import datetime
 r = sr.Recognizer()
 
 
-origin_file = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\slr_origin', ext=['wav'])
+origin_file = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\P_REDUCE\\', ext=['wav'])
 
 file_list = [origin_file]
 
@@ -29,8 +29,8 @@ for k in file_list:
         if dbfs < thresh :
             thresh = thresh - 1
         audio_chunks = split_on_silence(sound_file,
-            min_silence_len= 800,
-            silence_thresh= dbfs - 16,
+            min_silence_len= 2000,
+            silence_thresh= dbfs - 1,
             keep_silence= 700
         )
         full_txt = []
@@ -66,8 +66,10 @@ new = ''
 for i in range(len(pairs[0])):
     new += pairs[0][i] + '\n\n'
 
-with open('C:\\nmb\\nmb_data\\STT\\제발.txt', 'wt') as f: f.writelines(new)        
+with open('C:\\nmb\\nmb_data\\STT\\PRE.txt', 'wt') as f: f.writelines(new)        
 
 end = datetime.now()
 
 print('실행 시간 : ', end - start)
+
+# 500 -15 700 DATA는 되는데 REDUCE안된다
