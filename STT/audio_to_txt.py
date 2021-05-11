@@ -10,7 +10,7 @@ from datetime import datetime
 r = sr.Recognizer()
 
 
-origin_file = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\P_REDUCE\\', ext=['wav'])
+origin_file = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\P_NORMAL\\', ext=['wav'])
 
 file_list = [origin_file]
 
@@ -66,7 +66,7 @@ new = ''
 for i in range(len(pairs[0])):
     new += pairs[0][i] + '\n\n'
 
-with open('C:\\nmb\\nmb_data\\STT\\PRE.txt', 'wt') as f: f.writelines(new)        
+with open('C:\\nmb\\nmb_data\\STT\\P_NORMAL.txt', 'wt') as f: f.writelines(new)        
 
 end = datetime.now()
 
