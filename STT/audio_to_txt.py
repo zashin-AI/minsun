@@ -10,7 +10,7 @@ from datetime import datetime
 r = sr.Recognizer()
 
 
-origin_file = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\PPT_VOL\\', ext=['wav'])
+origin_file = librosa.util.find_files('C:\\nmb\\nmb_data\\STT\\5s_last_test\\', ext=['wav'])
 
 file_list = [origin_file]
 
@@ -29,9 +29,9 @@ for k in file_list:
         if dbfs < thresh :
             thresh = thresh - 1
         audio_chunks = split_on_silence(sound_file,  
-        min_silence_len= 2000,
+        min_silence_len= 1000,
         silence_thresh= dbfs - 30,
-        keep_silence= 1000)
+        keep_silence= True)
 
         full_txt = []
         for i, chunk in enumerate(audio_chunks):    
@@ -65,7 +65,7 @@ new = ''
 for i in range(len(pairs[0])):
     new += pairs[0][i] + '\n\n'
 
-with open('C:\\nmb\\nmb_data\\STT\\PPT모음.txt', 'wt') as f: f.writelines(new)        
+with open('C:\\nmb\\nmb_data\\STT\\5s_last_test_1000_16_true.txt', 'wt') as f: f.writelines(new)        
 
 end = datetime.now()
 
