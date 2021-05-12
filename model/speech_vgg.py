@@ -6,8 +6,11 @@ Based on the Keras VGG-16 implementation.
 # 추출기는 고전적인 VGG-16 아키텍처를 채택하고 단어 인식 작업을 통해 학습됩니다.
 # 일반화된 음성 표현은 사전 훈련된 모델에 의해 다른 데이터 세트를 사용하여 고유한 음성 처리 작업을 통해 전송할 수 있다
 
-from keras.models import Model
-from keras import layers
+from tensorflow.keras.models import Model
+from tensorflow.keras import layers
+from tensorflow import keras
+from tensorflow.keras import backend as K
+
 
 # include_top : 네트워크 상단에 3 개의 완전히 연결된 레이어를 포함할지 여부. 
 #               연결하고 더 추가안해서 그냥 기본적인 speech 모델 사용
