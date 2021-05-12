@@ -102,8 +102,12 @@ for pred_pathAudio in pred :
         y, sr = librosa.load(file, sr=22050) 
         mels = librosa.feature.melspectrogram(y, sr=sr, hop_length=128, n_fft=512)
         pred_mels = librosa.amplitude_to_db(mels, ref=np.max)
-        pred_mels = pred_mels.reshape(1, pred_mels.shape[0], pred_mels.shape[1])
+        pred_mels = pred_mels.reshape(1, pred_mels.shape[0]*pred_mels.shape[1])
         # print(pred_mels.shape)
+
+        pred_mels = scaler.transform(pred_mels) # minmaxscaler
+        pred_mels = pred_mels.reshape(1, 128, 862)
+        # print(pred_mels)
 
         y_pred = model.predict(pred_mels)
         # print(y_pred)
@@ -118,7 +122,8 @@ for pred_pathAudio in pred :
             # print(file[file.rfind('\\') + 1 :], '남자입니다.')
             if name == 'M' :
                 count_m += 1
-                 
+                
+                    
 print("43개 여성 목소리 중 "+str(count_f)+"개 정답")
 print("43개 남성 목소리 중 "+str(count_m)+"개 정답")
 

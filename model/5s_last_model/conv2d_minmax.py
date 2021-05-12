@@ -76,7 +76,7 @@ lr = ReduceLROnPlateau(monitor='val_loss', vactor=0.5, patience=10, verbose=1)
 path = 'C:/nmb/nmb_data/h5/5s_last/Conv2D_adam_mms.h5'
 mc = ModelCheckpoint(path, monitor='val_loss', verbose=1, save_best_only=True)
 tb = TensorBoard(log_dir='C:/nmb/nmb_data/graph/'+ 'Conv2D_adam_mms' + "/",histogram_freq=0, write_graph=True, write_images=True)
-history = model.fit(x_train, y_train, epochs=5000, batch_size=batch_size, validation_split=0.2, callbacks=[es, lr, mc, tb])
+# history = model.fit(x_train, y_train, epochs=5000, batch_size=batch_size, validation_split=0.2, callbacks=[es, lr, mc, tb])
 
 
 # 평가, 예측
@@ -102,8 +102,12 @@ for pred_pathAudio in pred :
         y, sr = librosa.load(file, sr=22050) 
         mels = librosa.feature.melspectrogram(y, sr=sr, hop_length=128, n_fft=512)
         pred_mels = librosa.amplitude_to_db(mels, ref=np.max)
-        pred_mels = pred_mels.reshape(1, pred_mels.shape[0], pred_mels.shape[1])
+        pred_mels = pred_mels.reshape(1, pred_mels.shape[0]*pred_mels.shape[1])
         # print(pred_mels.shape)
+
+        pred_mels = scaler.transform(pred_mels) # minmaxscaler
+        pred_mels = pred_mels.reshape(1, 128, 862)
+        # print(pred_mels)
 
         y_pred = model.predict(pred_mels)
         # print(y_pred)
@@ -111,14 +115,15 @@ for pred_pathAudio in pred :
         # print(y_pred_label)
 
         if y_pred_label == 0:   # 여성이라고 예측
-            print(file[file.rfind('\\') + 1 :], '여자입니다.')
+            # print(file[file.rfind('\\') + 1 :], '여자입니다.')
             if name == 'F' :
                 count_f += 1
         else:                   # 남성이라고 예측
-            print(file[file.rfind('\\') + 1 :], '남자입니다.')
+            # print(file[file.rfind('\\') + 1 :], '남자입니다.')
             if name == 'M' :
                 count_m += 1
-                 
+                
+                    
 print("43개 여성 목소리 중 "+str(count_f)+"개 정답")
 print("43개 남성 목소리 중 "+str(count_m)+"개 정답")
 
