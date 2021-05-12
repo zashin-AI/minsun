@@ -1,116 +1,126 @@
-import numpy as np
-import librosa
-import sklearn
-from datetime import datetime
-from sklearn.model_selection import train_test_split
-from tensorflow.keras.utils import to_categorical
-from tensorflow.keras.models import Sequential, load_model, Model
-from tensorflow.keras.layers import Dense, Conv1D,MaxPool1D, AveragePooling1D,Conv2D, MaxPool2D, AveragePooling2D, Dropout, Activation, Flatten, Add, Input, Concatenate
-from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau, TensorBoard
-from tensorflow.python.keras.callbacks import ModelCheckpoint
-import os
-from tensorflow.keras.optimizers import Adadelta, Adam, Nadam, RMSprop
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
-from speech_vgg import speechVGG
+'''
+Module containing speechVGG code for network.
+Based on the Keras VGG-16 implementation.
+'''
+# speechVGG는 심층 음성 기능 추출기로, 표현에서 응용 프로그램 및 음성 처리 문제에서 전이 학습을 위해 특별히 맞춤화됩니다. 
+# 추출기는 고전적인 VGG-16 아키텍처를 채택하고 단어 인식 작업을 통해 학습됩니다.
+# 일반화된 음성 표현은 사전 훈련된 모델에 의해 다른 데이터 세트를 사용하여 고유한 음성 처리 작업을 통해 전송할 수 있다
 
-# 데이터 불러오기
-x = np.load('C:\\nmb\\nmb_data\\npy\\5s_last\\total_data.npy') # data
-y = np.load('C:\\nmb\\nmb_data\\npy\\5s_last\\total_label.npy') # label
+from keras.models import Model
+from keras import layers
 
-x = x.reshape(-1, x.shape[1] * x.shape[2])
+# include_top : 네트워크 상단에 3 개의 완전히 연결된 레이어를 포함할지 여부. 
+#               연결하고 더 추가안해서 그냥 기본적인 speech 모델 사용
+# weights : None(무작위 초기화), 'imagenet'(ImageNet 사전 학습) 중 하나
+#           이미지넷의 사전 학습된 가중치이기 때문에 사용안함
+# pooling :include_top이 False일 때 형상 추출을 위한 선택적 풀링 모드입니다. 
+#         - none은 모델의 출력이 마지막 컨볼루션 블록의 4D 텐서 출력이 된다는 것을 의미합니다. 
+#         - avg는 마지막 컨볼루션 블록의 출력에 global average pooling이 적용된다는 것을 의미하므로 모델의 출력이 2D 텐서가 됩니다.
+#         - max는 global max pooling이 적용됩니다.
+# classes : 이미지를 분류 할 선택적 클래스 수, include_top=True 인 경우에만 지정 되고 weights인수가 지정 되지 않은 경우에만 지정됩니다.
 
-x_train, x_test, y_train, y_test = train_test_split(
-    x, y, shuffle=True, train_size=0.8, random_state=42)
-
-print(x.shape, y.shape) # (4536, 128, 862) (4536,)
-print(x_train.shape, y_train.shape) # (3628, 128, 862) (3628,)
-print(x_test.shape, y_test.shape)   # (908, 128, 862) (908,)
-
-scaler = MinMaxScaler()
-scaler.fit(x_train)
-x_train = scaler.transform(x_train)
-x_test = scaler.transform(x_test)
-
-x_train = x_train.reshape(3628, 128, 862,1)
-x_test = x_test.reshape(908, 128, 862,1)
-
-# 모델 구성
-model = speechVGG(
-    include_top=True,
-    input_shape=(128,862,1),
-    classes=2,
-    pooling=None,
-    weights=None,
-    transfer_learning=True
-)
-
-model.summary()
-
-model.save('C:/nmb/nmb_data/h5/5s_last/model_speech_vgg.h5')
-
-start = datetime.now()
-
-op = Adadelta(lr=1e-5)
-batch_size = 32
-
-model.compile(optimizer=op, loss="sparse_categorical_crossentropy", metrics=['acc'])
-es = EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True, verbose=1)
-lr = ReduceLROnPlateau(monitor='val_loss', vactor=0.5, patience=10, verbose=1)
-path = 'C:/nmb/nmb_data/h5/5s_last/speech_vgg_mms.h5'
-mc = ModelCheckpoint(path, monitor='val_loss', verbose=1, save_best_only=True)
-tb = TensorBoard(log_dir='C:/nmb/nmb_data/graph/'+ 'speech_vgg_mms' + "/",histogram_freq=0, write_graph=True, write_images=True)
-history = model.fit(x_train, y_train, epochs=5000, batch_size=batch_size, validation_split=0.2, callbacks=[es, lr, mc, tb])
+# model.trainable = False (전이학습 모델의 특징 추출 부분의 가중치가 고정, 
+#                          고정하면 fit하는 중 지정된 층의 가중치가 업데이트 되지 않는다.)
+# True(기본값)로 하면 전이학습 모델의 특징 추출 부분의 가중치가 흐트러지고 새로 훈련시키는 것
 
 
-# 평가, 예측
-model.load_weights('C:/nmb/nmb_data/h5/5s_last/speech_vgg_mms.h5')
-result = model.evaluate(x_test, y_test, batch_size=batch_size)
-print("loss : {:.5f}".format(result[0]))
-print("acc : {:.5f}".format(result[1]) + '\n')
 
-############################################ PREDICT ####################################
-pred = ['C:/nmb/nmb_data/predict/5s_last/F','C:/nmb/nmb_data/predict/5s_last/M']
+def speechVGG(include_top=True,
+            weights=None, 
+            input_shape=(128,128,1),
+            classes=8,
+            pooling=None,
+            transfer_learning=False):
 
-count_f = 0
-count_m = 0
+    img_input = layers.Input(shape=input_shape)
 
-for pred_pathAudio in pred : 
-    files = librosa.util.find_files(pred_pathAudio, ext=['wav'])
-    files = np.asarray(files)
-    for file in files:   
-        name = os.path.basename(file)
-        length = len(name)
-        name = name[0]
+    # Block 1
+    x = layers.Conv2D(64, (3, 3),
+                      activation='relu',
+                      padding='same',
+                      name='block1_conv1')(img_input)
+    x = layers.Conv2D(64, (3, 3),
+                      activation='relu',
+                      padding='same',
+                      name='block1_conv2')(x)
+    x = layers.MaxPooling2D((2, 2), strides=(2, 2), name='block1_pool')(x)
 
-        y, sr = librosa.load(file, sr=22050) 
-        mels = librosa.feature.melspectrogram(y, sr=sr, hop_length=128, n_fft=512)
-        pred_mels = librosa.amplitude_to_db(mels, ref=np.max)
-        pred_mels = pred_mels.reshape(1, pred_mels.shape[0]*pred_mels.shape[1])
-        # print(pred_mels.shape)
+    # Block 2
+    x = layers.Conv2D(128, (3, 3),
+                      activation='relu',
+                      padding='same',
+                      name='block2_conv1')(x)
+    x = layers.Conv2D(128, (3, 3),
+                      activation='relu',
+                      padding='same',
+                      name='block2_conv2')(x)
+    x = layers.MaxPooling2D((2, 2), strides=(2, 2), name='block2_pool')(x)
 
-        pred_mels = scaler.transform(pred_mels) # minmaxscaler
-        pred_mels = pred_mels.reshape(1, 128, 862)
-        # print(pred_mels)
+    # Block 3
+    x = layers.Conv2D(256, (3, 3),
+                      activation='relu',
+                      padding='same',
+                      name='block3_conv1')(x)
+    x = layers.Conv2D(256, (3, 3),
+                      activation='relu',
+                      padding='same',
+                      name='block3_conv2')(x)
+    x = layers.Conv2D(256, (3, 3),
+                      activation='relu',
+                      padding='same',
+                      name='block3_conv3')(x)
+    x = layers.MaxPooling2D((2, 2), strides=(2, 2), name='block3_pool')(x)
 
-        y_pred = model.predict(pred_mels)
-        # print(y_pred)
-        y_pred_label = np.argmax(y_pred)
-        # print(y_pred_label)
+    # Block 4
+    x = layers.Conv2D(512, (3, 3),
+                      activation='relu',
+                      padding='same',
+                      name='block4_conv1')(x)
+    x = layers.Conv2D(512, (3, 3),
+                      activation='relu',
+                      padding='same',
+                      name='block4_conv2')(x)
+    x = layers.Conv2D(512, (3, 3),
+                      activation='relu',
+                      padding='same',
+                      name='block4_conv3')(x)
+    x = layers.MaxPooling2D((2, 2), strides=(2, 2), name='block4_pool')(x)
 
-        if y_pred_label == 0:   # 여성이라고 예측
-            # print(file[file.rfind('\\') + 1 :], '여자입니다.')
-            if name == 'F' :
-                count_f += 1
-        else:                   # 남성이라고 예측
-            # print(file[file.rfind('\\') + 1 :], '남자입니다.')
-            if name == 'M' :
-                count_m += 1
-                
-                    
-print("43개 여성 목소리 중 "+str(count_f)+"개 정답")
-print("43개 남성 목소리 중 "+str(count_m)+"개 정답")
+    # Block 5
+    x = layers.Conv2D(512, (3, 3),
+                      activation='relu',
+                      padding='same',
+                      name='block5_conv1')(x)
+    x = layers.Conv2D(512, (3, 3),
+                      activation='relu',
+                      padding='same',
+                      name='block5_conv2')(x)
+    x = layers.Conv2D(512, (3, 3),
+                      activation='relu',
+                      padding='same',
+                      name='block5_conv3')(x)
+    x = layers.MaxPooling2D((2, 2), strides=(2, 2), name='block5_pool')(x)
 
-end = datetime.now()
-time = end - start
-print("작업 시간 : " , time) 
+    if include_top: # = fc 계층
+        # allows to load all layers except these ones that will finetune to task.
+        if transfer_learning:
+            add_string = '_new'
+        else:
+            add_string = ''
+        # Classification block
+        x = layers.Flatten(name='flatten' + add_string)(x)
+        x = layers.Dense(256, activation='relu', name='fc1' + add_string)(x)
+        x = layers.Dense(256, activation='relu', name='fc2' + add_string)(x)
+        x = layers.Dense(classes, activation='softmax', name='predictions' + add_string)(x)
+    else:
+        x = x
 
+    inputs = img_input
+
+    # Create model.
+    model = Model(inputs, x, name='speech_vgg')
+
+    if weights:
+        model.load_weights(weights, by_name=True)
+
+    return model
