@@ -31,7 +31,7 @@ for k in file_list:
         audio_chunks = split_on_silence(sound_file,  
         min_silence_len= 1000,
         silence_thresh= dbfs - 30,
-        keep_silence= True)
+        keep_silence= 0)
 
         full_txt = []
         for i, chunk in enumerate(audio_chunks):    
