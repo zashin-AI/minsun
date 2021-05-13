@@ -9,7 +9,7 @@ from tensorflow.keras.layers import Dense, Conv1D,MaxPool1D, AveragePooling1D,Co
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau, TensorBoard
 from tensorflow.python.keras.callbacks import ModelCheckpoint
 import os
-from tensorflow.keras.optimizers import Adadelta, Adam, Nadam, RMSprop
+from tensorflow.keras.optimizers import Adadelta, Adam, Nadam, RMSprop, SGD
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from speech_vgg import speechVGG
 from keras import backend as K
@@ -42,24 +42,24 @@ model = speechVGG(
 
 model.summary()
 
-model.save('C:/nmb/nmb_data/h5/5s_last/model_speech_vgg.h5')
+# model.save('C:/nmb/nmb_data/h5/5s_last/model_speech_vgg.h5')
 
 start = datetime.now()
 
-op = Adadelta(lr=1e-4)
+op = RMSprop(lr=1e-5)
 batch_size = 8
 
 model.compile(optimizer=op, loss="sparse_categorical_crossentropy", metrics=['acc'])
 es = EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True, verbose=1)
 lr = ReduceLROnPlateau(monitor='val_loss', vactor=0.5, patience=10, verbose=1)
-path = 'C:/nmb/nmb_data/h5/5s_last/speech_vgg_adadelta.h5'
+path = 'C:/nmb/nmb_data/h5/5s_last/speech_vgg_RMS.h5'
 mc = ModelCheckpoint(path, monitor='val_loss', verbose=1, save_best_only=True)
-tb = TensorBoard(log_dir='C:/nmb/nmb_data/graph/'+ 'speech_vgg_adadelta' + "/",histogram_freq=0, write_graph=True, write_images=True)
-# history = model.fit(x_train, y_train, epochs=5000, batch_size=batch_size, validation_split=0.2, callbacks=[es, lr, mc, tb])
+tb = TensorBoard(log_dir='C:/nmb/nmb_data/graph/'+ 'speech_vgg_RMS' + "/",histogram_freq=0, write_graph=True, write_images=True)
+history = model.fit(x_train, y_train, epochs=5000, batch_size=batch_size, validation_split=0.2, callbacks=[es, lr, mc, tb])
 
 
 # 평가, 예측
-model.load_weights('C:/nmb/nmb_data/h5/5s_last/speech_vgg_adadelta.h5')
+model.load_weights('C:/nmb/nmb_data/h5/5s_last/speech_vgg_RMS.h5')
 result = model.evaluate(x_test, y_test, batch_size=batch_size)
 print("loss : {:.5f}".format(result[0]))
 print("acc : {:.5f}".format(result[1]) + '\n')
@@ -161,3 +161,9 @@ Trainable params: 28,411,586
 Non-trainable params: 0
 _________________________________________________________________
 '''
+# loss : 0.03696
+# acc : 0.98789
+
+# 43개 여성 목소리 중 41개 정답
+# 43개 남성 목소리 중 42개 정답
+# 작업 시간 :  0:17:02.853631
