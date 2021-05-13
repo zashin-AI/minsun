@@ -29,13 +29,13 @@ from tensorflow.keras.models import load_model
 # audio_file = 'E:\\nmb\\nmb_data\\STT_multiple_speaker_temp\\mindslabGYD\\GYD_M_88_DG_2018-0806-1105-38_denoise.wav'
 # audio_file = 'E:\\nmb\\nmb_data\\STT_multiple_speaker_temp\\korea_t12\\korea_multi_t12.wav'
 # audio_file = 'E:\\nmb\\nmb_data\\STT_multiple_speaker_temp\\korea_t18\\korea_multi_t18.wav'
-audio_file = 'C:\\nmb\\nmb_data\\intergration\\korea_multi_t12.wav'
+audio_file = 'C:\\nmb\\nmb_data\\intergration\\korea_multi_t18.wav'
 
 # 파일 경로 분리
 audio_file_path = os.path.splitext(audio_file)
 audio_file_path = os.path.split(audio_file_path[0])
 # folder_path = audio_file_path[0]
-folder_path = 'C:\\nmb\\nmb_data\\intergration\\1\\'
+folder_path = 'C:\\nmb\\nmb_data\\intergration\\test1\\'
 file_name = audio_file_path[1]
 print(folder_path, file_name)
 
@@ -72,7 +72,7 @@ def _split_silence(audio_file) :
     audio_chunks = split_on_silence(
         audio_file,  
         min_silence_len= 1000,
-        silence_thresh= dbfs - 20,
+        silence_thresh= dbfs - 30,
         keep_silence= True
     )
     return audio_chunks
