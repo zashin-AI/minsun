@@ -286,4 +286,3 @@ gan_train(epochs, batch, 500)
 end = datetime.now()
 time = end - start
 print("작업 시간 : " , time)  
-© 2021 GitHub, Inc.
