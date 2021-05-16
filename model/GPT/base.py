@@ -1,3 +1,5 @@
+# https://hyyoka-ling-nlp.tistory.com/8
+
 from transformers import pipeline
 generator = pipeline("text-generation", model='EleutherAI/gpt-neo-2.7B')
 prompt = "What is the meaning of life?"
