@@ -84,11 +84,11 @@ for pred_pathAudio in pred:
         y_pred = model.predict(pred_mels)
         y_pred_label = np.argmax(y_pred)
         if y_pred_label == 0:   # 여성이라고 예측
-            print(file[file.rfind('\\') + 1 :], '여자입니다.')
+            # print(file[file.rfind('\\') + 1 :], '여자입니다.')
             if name == 'F' :
                 count_f += 1
         else:                   # 남성이라고 예측
-            print(file[file.rfind('\\') + 1 :], '남자입니다.')
+            # print(file[file.rfind('\\') + 1 :], '남자입니다.')
             if name == 'M' :
                 count_m += 1
 print("43개 여성 목소리 중 "+str(count_f)+"개 정답")
@@ -97,3 +97,8 @@ print("43개 남성 목소리 중 "+str(count_m)+"개 정답")
 end = datetime.now()
 time = end - start_now
 print("작업 시간 : ", time)
+# loss : 0.11121
+# acc : 0.97797
+# 43개 여성 목소리 중 41개 정답
+# 43개 남성 목소리 중 42개 정답
+# 작업 시간 :  0:25:27.264733
