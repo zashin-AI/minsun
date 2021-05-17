@@ -9,7 +9,7 @@ from datetime import datetime
 from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
 from tensorflow.keras.utils import to_categorical
-from tensorflow.keras.applications import MobileNet, InceptionV3
+from tensorflow.keras.applications import MobileNet, InceptionV3, DenseNet121, Xception, EfficientNetB4, VGG16, VGG19, ResNet101, NASNetMobile
 from tensorflow.keras.models import Sequential, load_model, Model
 from tensorflow.keras.layers import Dense, Conv2D, MaxPool2D, AveragePooling2D, Dropout, Activation, Flatten, Add, Input, Concatenate, LeakyReLU, ReLU
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
