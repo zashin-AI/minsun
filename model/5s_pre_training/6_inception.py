@@ -12,7 +12,7 @@ from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.applications import MobileNet, InceptionV3, DenseNet121, Xception, EfficientNetB4, VGG16, VGG19, ResNet101, NASNetMobile
 from tensorflow.keras.models import Sequential, load_model, Model
 from tensorflow.keras.layers import Dense, Conv2D, MaxPool2D, AveragePooling2D, Dropout, Activation, Flatten, Add, Input, Concatenate, LeakyReLU, ReLU
-from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
+from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau, TensorBoard
 from tensorflow.keras.optimizers import Adadelta, Adam, Nadam, RMSprop
 
 start_now = datetime.now()
@@ -33,7 +33,7 @@ x_test = x_test.reshape(x_test.shape[0], x_test.shape[1], x_test.shape[2], aaa)
 print(x_train.shape, y_train.shape) # (3628, 128, 862, 1) (3628,)
 print(x_test.shape, y_test.shape)   # (908, 128, 862, 1) (908,)
 
-model = MobileNet(
+model = ResNet101(
     include_top=True,
     input_shape=(128,862,1),
     classes=2,
@@ -42,20 +42,21 @@ model = MobileNet(
 )
 model.summary()
 # model.trainable = False
-# model.save('C:/nmb/nmb_data/h5/5s/mobilenet_rmsprop_1.h5')
+model.save('C:\\nmb\\nmb_data\\h5\\pre_train\\inception_adam.h5')
 
 # 컴파일, 훈련
-op = RMSprop(lr=1e-3)
-batch_size = 8
+op = Adam(lr=1e-5)
+batch_size = 32
 es = EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True, verbose=1)
 lr = ReduceLROnPlateau(monitor='val_loss', vactor=0.5, patience=10, verbose=1)
-path = 'C:/nmb/nmb_data/h5/5s/mobilenet/mobilenet_rmsprop_1.h5'
+path = 'C:\\nmb\\nmb_data\\h5\\pre_train\\inception_adam_1e5.h5'
 mc = ModelCheckpoint(path, monitor='val_loss', verbose=1, save_best_only=True)
+tb = TensorBoard(log_dir='C:/nmb/nmb_data/graph/'+ 'inception_adam_1e5' + "/",histogram_freq=0, write_graph=True, write_images=True)
 model.compile(optimizer=op, loss="sparse_categorical_crossentropy", metrics=['acc'])
-history = model.fit(x_train, y_train, epochs=1000, batch_size=batch_size, validation_split=0.2, callbacks=[es, lr, mc])
+history = model.fit(x_train, y_train, epochs=1000, batch_size=batch_size, validation_split=0.2, callbacks=[es, lr, mc, tb])
 
 # 평가, 예측
-model = load_model('C:\\nmb\\nmb_data\\h5\\5s_last\\mobilenet_rmsprop_1.h5')
+model = load_model('C:\\nmb\\nmb_data\\h5\\pre_train\\inception_adam_1e5.h5')
 # model.load_weights('C:/nmb/nmb_data/h5/5s/mobilenet/mobilenet_rmsprop_1.h5')
 result = model.evaluate(x_test, y_test, batch_size=8)
 print("loss : {:.5f}".format(result[0]))
@@ -83,11 +84,11 @@ for pred_pathAudio in pred:
         y_pred = model.predict(pred_mels)
         y_pred_label = np.argmax(y_pred)
         if y_pred_label == 0:   # 여성이라고 예측
-            print(file[file.rfind('\\') + 1 :], '여자입니다.')
+            # print(file[file.rfind('\\') + 1 :], '여자입니다.')
             if name == 'F' :
                 count_f += 1
         else:                   # 남성이라고 예측
-            print(file[file.rfind('\\') + 1 :], '남자입니다.')
+            # print(file[file.rfind('\\') + 1 :], '남자입니다.')
             if name == 'M' :
                 count_m += 1
 print("43개 여성 목소리 중 "+str(count_f)+"개 정답")
@@ -96,3 +97,9 @@ print("43개 남성 목소리 중 "+str(count_m)+"개 정답")
 end = datetime.now()
 time = end - start_now
 print("작업 시간 : ", time)
+
+# loss : 0.10213
+# acc : 0.96256
+# 43개 여성 목소리 중 39개 정답
+# 43개 남성 목소리 중 39개 정답
+# 작업 시간 :  0:36:48.103499
