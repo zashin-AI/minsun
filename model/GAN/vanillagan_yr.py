@@ -1,7 +1,5 @@
 # https://teddylee777.github.io/tensorflow/vanilla-gan
 
-# 1점대로 다루기 여간 어려우니...2점대로 만들자
-
 import numpy as np
 from tensorflow.keras.layers import Dense, LeakyReLU, Dropout, Input
 from tensorflow.keras.models import Sequential, Model
