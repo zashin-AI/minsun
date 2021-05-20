@@ -1,5 +1,7 @@
 # https://teddylee777.github.io/tensorflow/vanilla-gan
 
+# 1점대로 다루기 여간 어려우니...2점대로 만들자
+
 import numpy as np
 from tensorflow.keras.layers import Dense, LeakyReLU, Dropout, Input
 from tensorflow.keras.models import Sequential, Model
@@ -22,10 +24,10 @@ print(f_ds.shape)
 # generator 마지막에 activation이 tanh.
 # tanh을 거친 output 값이 -1~1 사이로 나오기 때문에 최대 1 최소 -1 로 맞춰줘야 한다.
 
-from sklearn.preprocessing import MaxAbsScaler, MinMaxScaler, StandardScaler, RobustScaler
-
 print(np.max(f_ds), np.min(f_ds))
+# 3.8146973e-06 -80.0
 
+from sklearn.preprocessing import MaxAbsScaler, MinMaxScaler, StandardScaler, RobustScaler
 scaler1 = StandardScaler()
 scaler1.fit(f_ds)
 f_ds = scaler1.transform(f_ds)
@@ -34,8 +36,10 @@ scaler2 = MaxAbsScaler()
 scaler2.fit(f_ds)
 f_ds = scaler2.transform(f_ds)
 
+# 이 값이 -1 ~ 1 사아에 있는지 확인
 print(np.max(f_ds), np.min(f_ds))
-
+# 1.0 -0.9439434
+# 비슷하게 맞춰 줌!
 
 # 기록용---------------------------------
 # MaxAbsScaler
@@ -103,8 +107,7 @@ generator.summary()
 # Discriminator 판별자 함수 정의
 
 discriminator = Sequential([
-    Dense(1024, input_shape=(22144,), 
-    kernel_initializer=RandomNormal(stddev=0.02)),
+    Dense(1024, input_shape=(22144,), kernel_initializer=RandomNormal(stddev=0.02)),
     # 데이터 쉐잎과 맞춰줌(22144)
     LeakyReLU(0.2), 
     Dropout(0.3), 
@@ -243,15 +246,22 @@ g_losses = []
 start = datetime.now()
 
 for epoch in range(1, EPOCHS + 1):
+    # 각 배치별 학습
     for real_images in get_batches(f_ds, BATCH_SIZE):
-
-        input_noise = np.random.uniform(-1, 1, size=[BATCH_SIZE, NOISE_DIM])        
+        # 랜덤 노이즈 생성
+        input_noise = np.random.uniform(-1, 1, size=[BATCH_SIZE, NOISE_DIM])
+        
+        # 가짜 이미지 데이터 생성
         generated_images = generator.predict(input_noise)
         
+        # Gan에 학습할 X 데이터 정의
         x_dis = np.concatenate([real_images, generated_images])
+        
+        # Gan에 학습할 Y 데이터 정의
         y_dis = np.zeros(2 * BATCH_SIZE)
-        y_dis[:BATCH_SIZE] = 1                                                  # 반(진짜)에는 0.9, 나머지 반(위조)에는 1     # 왜 0.9인가? https://kakalabblog.wordpress.com/2017/07/27/gan-tutorial-2016/ # One-sided label smoothing : 진짜(1.0)에 가까운 0.9를 줌으로 D의 극심한 추정을 막는다.
-                                                                                
+        y_dis[:BATCH_SIZE] = 0.9    # 반(진짜)에는 0.9, 나머지 반(위조)에는 1     # 왜 0.9인가? https://kakalabblog.wordpress.com/2017/07/27/gan-tutorial-2016/
+                                                                                # One-sided label smoothing : 진짜(1.0)에 가까운 0.9를 줌으로 D의 극심한 추정을 막는다.
+        
         # Discriminator 훈련                                                    # discriminator 먼저 학습
         discriminator.trainable = True
         d_loss = discriminator.train_on_batch(x_dis, y_dis)                     # 이때 돌아가는 역전파는 D에만 영향
@@ -259,7 +269,9 @@ for epoch in range(1, EPOCHS + 1):
         # Gan 훈련                                                              # 다음 gan 학습
         noise = np.random.uniform(-1, 1, size=[BATCH_SIZE, NOISE_DIM])
         y_gan = np.ones(BATCH_SIZE)                                             # 일부러 라벨링 1(진짜)로 들어감, D가 잘 판단하는지 보려고
-        discriminator.trainable = False                                         #Discriminator의 판별 학습을 방지합니다 //  D에 역전파 돌아감을 방지
+        
+        # Discriminator의 판별 학습을 방지합니다
+        discriminator.trainable = False                                         # D에 역전파 돌아감을 방지
         g_loss = gan.train_on_batch(noise, y_gan)                               # 위에서 갱신 된 D와 G를 이어준 gan 모델을 학습
         
     d_losses.append(d_loss)
