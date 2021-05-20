@@ -156,5 +156,5 @@ def read_text():
 
 
 if __name__ == '__main__':
-    model = load_model('C:\\nmb\\nmb_data\\h5\\5s_last\\mobilenet_rmsprop_1.h5')
+    model = load_model('C:\\nmb\\nmb_data\\h5\\mobilenet_rmsprop_1.h5')
     app.run(debug=True) # debug = False 인 경우 문제가 생겼을 경우 제대로 된 확인을 하기 어려움
