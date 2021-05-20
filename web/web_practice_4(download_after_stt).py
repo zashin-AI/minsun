@@ -7,7 +7,7 @@ from flask import Flask, request, render_template, send_file
 from tensorflow.keras.models import load_model
 from pydub import AudioSegment, effects
 from pydub.silence import split_on_silence
-
+from hanspell import spell_checker 
 import numpy as np
 import librosa
 import speech_recognition as sr
@@ -54,7 +54,10 @@ def STT(audio_file):
     with audio_file as audio:
         file = r.record(audio)
         stt = r.recognize_google(file, language='ko-KR')
-    return stt
+        spelled_sent = spell_checker.check(stt)
+        checked_sent = spelled_sent.checked
+    return checked_sent
+   
 
 def predict_speaker(y, sr):
     mels = librosa.feature.melspectrogram(y, sr = sr, hop_length=128, n_fft=512, win_length=512)
