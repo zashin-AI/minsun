@@ -35,5 +35,18 @@ def split_silence(audio_file):
     )
     return audio_chunck
 
+# 네이버 맞춤법 검사기
+def STT_hanspell(audio_file):
+    with audio_file as audio:
+        file = r.record(audio)
+        stt = r.recognize_google(file, language= 'ko-KR')
+        spelled_sent = spell_checker.check(stt)
+        checked_sent = spelled_sent.checked 
+    return checked_sent
+
+def predict_speaker(y, sr):
+    mels = librosa.feature.melspectrogram(y,sr = sr, hop_length=128, n_fft=512, win_length=512)
+    pred_mels = librosa.amplitude_to_db(mels, ref=np.max) # 진폭 스펙트로그램을 db스케일 스펙트로그램으로 변환
+    pred_mels = pred_mels.reshape(1, pred_mels.shape[0], pred_mels.shape[1])
 
 
