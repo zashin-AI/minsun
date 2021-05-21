@@ -62,15 +62,12 @@ def predict_speaker(y, sr):
     mels = librosa.feature.melspectrogram(y,sr = sr, hop_length=128, n_fft=512, win_length=512)
     pred_mels = librosa.amplitude_to_db(mels, ref=np.max) # 진폭 스펙트로그램을 db스케일 스펙트로그램으로 변환
     pred_mels = pred_mels.reshape(1, pred_mels.shape[0], pred_mels.shape[1])
-    y_pred = model.predcit(pred_mels)
+    y_pred = model.predict(pred_mels)
     y_pred_label = np.argmax(y_pred)
     if y_pred_label == 0:
         return '여자'
     if y_pred_label == 1:
         return '남자'
-
-
-        
 
 app = Flask(__name__)
 
@@ -108,7 +105,7 @@ def download():
                     y = y[:22050*5]
                     speaker = predict_speaker(y, sample_rate)
                     speaker_stt.append(str(speaker))
-                    print(speaker_stt[1], " : ", speaker_stt[0])
+                    print(speaker_stt[1] + " : " + speaker_stt[0])
 
                 else:
                     audio_copy = AudioSegment.from_wav(out_file)
