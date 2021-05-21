@@ -27,13 +27,13 @@ def normalized_sound(audio_file):
 # 말의 앞뒤 묵음 유지한채 묵음 자르기
 def split_silence(audio_file):
     dbfs = audio_file.dBFS
-    audio_chunck = split_on_silence(
+    audio_chunks = split_on_silence(
         audio_file,
         min_silence_len=1000,
         silence_thresh=dbfs - 30,
         keep_silence= True
     )
-    return audio_chunck
+    return audio_chunks
 
 # 네이버 맞춤법 검사기
 def STT_hanspell(audio_file):
@@ -72,9 +72,9 @@ def download():
         if not f : return render_template('upload.html')
 
         # 파일을 받아 볼륨 정규화를 해주고
-        normalizesound = normalized_sound(f)
+        normalizedsound = normalized_sound(f)
         # 묵음을 잘라준다
-        audio_chunks = split_silence(normalized_sound)
+        audio_chunks = split_silence(normalizedsound)
 
         save_script = ''
 
