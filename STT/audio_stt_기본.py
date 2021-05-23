@@ -11,7 +11,7 @@ import os
 
 r = sr.Recognizer()
 
-audios_dir = 'C:\\nmb\\nmb_data\\STT\\5s_last_test\\'
+audios_dir = 'C:\\nmb\\nmb_data\\STT\\mindslab\\normal\\1\\'
 infiles = librosa.util.find_files(audios_dir)
 for audio in infiles:
     _, w_id = os.path.split(audio)
