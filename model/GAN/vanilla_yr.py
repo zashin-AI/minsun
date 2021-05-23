@@ -268,7 +268,7 @@ for epoch in range(1, EPOCHS + 1):
         
         # Gan 훈련                                                              # 다음 gan 학습
         noise = np.random.uniform(-1, 1, size=[BATCH_SIZE, NOISE_DIM])
-        y_gan = np.ones(BATCH_SIZE)                                             # 일부러 라벨링 1(진짜)로 들어감, D가 잘 판단하는지 보려고
+        y_gan = np.ones(BATCH_SIZE)                                             # 위조데이터를 의도적으로 라벨링 1(진짜)로 들어감, D가 잘 판단하는지 보려고
         
         # Discriminator의 판별 학습을 방지합니다
         discriminator.trainable = False                                         # D에 역전파 돌아감을 방지
