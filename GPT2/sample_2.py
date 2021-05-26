@@ -37,10 +37,13 @@ def top_p_logits(logits, p):
     # 내림차순으로 logits을 정렬, sort() = sort(axis=-1)
     cumulative_probs = tf.cumsum(tf.nn.softmax(sorted_logits, axis=-1), axis=-1)
     # tf.cumsum : 누적 합계를 수행 (ex. ([a, b, c])   # [a, a + b, a + b + c] )
-    indices = tf.stack([
+    indices = tf.stack([ 
+        # indices = index의 복수
+        # tf.stack : (a,b,c)shape에서 N텐서의 길이가 주어졌을 때, axis=0이면 (n,a,b,c) / axis = 1 이면 (a,n,b,c)가 된다
         tf.range(0, batch),
         # number of indices to include
         tf.maximum(tf.reduce_sum(tf.cast(cumulative_probs <= p, tf.int32), axis=-1) - 1, 0),
+        # reduce_sum : 텐서의 차원들을 탐색하며 개체들의 총합을 계산한다.
     ], axis=-1)
     min_values = tf.gather_nd(sorted_logits, indices)
     return tf.where(

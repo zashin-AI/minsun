@@ -59,3 +59,26 @@ array([[0.57124357, 0.67179746, 0.72119571],
 '''
 
 # 결론 : sort() = sort(axis=-1) = sort(axis=1) 값은 같다.
+
+
+#################################################################
+
+# tf.reduce_sum()
+
+x = np.arange(6).reshape(2,3)
+print(x)
+'''
+[[0 1 2]
+ [3 4 5]]
+'''
+sess = tf.Session()
+print(sess.run(tf.reduce_sum(x)),'\n')
+# 15
+print(sess.run(tf.reduce_sum(x,0)),'\n') # 열단위로 sum
+# [3 5 7]
+print(sess.run(tf.reduce_sum(x,1)),'\n') # 행단위로 sum
+# [ 3 12]
+print(sess.run(tf.reduce_sum(x-1,0)),'\n')
+# [1 3 5]
+print(sess.run(tf.reduce_sum(x,1,keep_dims=True))) # keep_dims 원래의 형태 유지
+
