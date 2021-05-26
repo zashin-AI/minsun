@@ -34,8 +34,9 @@ def top_p_logits(logits, p):
     """핵심 sampling"""
     batch, _ = logits.shape.as_list()
     sorted_logits = tf.sort(logits, direction='DESCENDING', axis=-1) 
-    # 내림차순으로 logits을 정렬, axis=-1 : 현재 배열의 마지막 axis를 의미
+    # 내림차순으로 logits을 정렬, sort() = sort(axis=-1)
     cumulative_probs = tf.cumsum(tf.nn.softmax(sorted_logits, axis=-1), axis=-1)
+    # tf.cumsum : 누적 합계를 수행 (ex. ([a, b, c])   # [a, a + b, a + b + c] )
     indices = tf.stack([
         tf.range(0, batch),
         # number of indices to include
