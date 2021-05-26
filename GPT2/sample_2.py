@@ -16,33 +16,37 @@ def top_k_logits(logits, k):
             # tf.where(bool type 텐서, true일 때 출력값, false일 때 출력값)
             # x, y가 없으면 참 요소의 좌표(2D 텐서)를 반환한다. 
             logits < min_values,
-            tf.ones_like(logits, dtype=logits.dtype) * -1e10,
+            tf.ones_like(logits, dtype=logits.dtype) * -1e10, # -100억
             # tf.ones_like : 모든 요소가 1로 설정된 tensor와 동일한 유형 및 모양의 tensor를 리턴한다.
             logits,
         )
-    return tf.cond(
-       tf.equal(k, 0),
+    
+    # tf.cond :  tf.equal이면 logits 동작이 실행되고, _top_k()는 실행되지 않는다.
+    return tf.cond( 
+       tf.equal(k, 0), # k == 0 
        lambda: logits,
        lambda: _top_k(),
     )
 
 
-# def top_p_logits(logits, p):
-#     """Nucleus sampling"""
-#     batch, _ = logits.shape.as_list()
-#     sorted_logits = tf.sort(logits, direction='DESCENDING', axis=-1)
-#     cumulative_probs = tf.cumsum(tf.nn.softmax(sorted_logits, axis=-1), axis=-1)
-#     indices = tf.stack([
-#         tf.range(0, batch),
-#         # number of indices to include
-#         tf.maximum(tf.reduce_sum(tf.cast(cumulative_probs <= p, tf.int32), axis=-1) - 1, 0),
-#     ], axis=-1)
-#     min_values = tf.gather_nd(sorted_logits, indices)
-#     return tf.where(
-#         logits < min_values,
-#         tf.ones_like(logits) * -1e10,
-#         logits,
-#     )
+
+def top_p_logits(logits, p):
+    """핵심 sampling"""
+    batch, _ = logits.shape.as_list()
+    sorted_logits = tf.sort(logits, direction='DESCENDING', axis=-1) 
+    # 내림차순으로 logits을 정렬, axis=-1 : 현재 배열의 마지막 axis를 의미
+    cumulative_probs = tf.cumsum(tf.nn.softmax(sorted_logits, axis=-1), axis=-1)
+    indices = tf.stack([
+        tf.range(0, batch),
+        # number of indices to include
+        tf.maximum(tf.reduce_sum(tf.cast(cumulative_probs <= p, tf.int32), axis=-1) - 1, 0),
+    ], axis=-1)
+    min_values = tf.gather_nd(sorted_logits, indices)
+    return tf.where(
+        logits < min_values,
+        tf.ones_like(logits) * -1e10,
+        logits,
+    )
 
 
 # def sample_sequence(*, hparams, length, start_token=None, batch_size=None, context=None, temperature=1, top_k=0, top_p=1):
