@@ -39,19 +39,19 @@ model = MobileNet(
     input_shape=(128,862,1),
     classes=2,
     pooling=None,
-    weights='imagenet',
+    weights=None,
 )
 # model.trainable = False
 model.summary()
 
-model.save('C:\\nmb\\nmb_data\\h5\\pre_train\\11_mobilenet_rmsprop_false_img.h5')
+model.save('C:\\nmb\\nmb_data\\h5\\pre_train\\11_mobilenet_rmsprop_True.h5')
 
 # 컴파일, 훈련
 op = RMSprop(lr=1e-3)
 batch_size = 8
 es = EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True, verbose=1)
 lr = ReduceLROnPlateau(monitor='val_loss', vactor=0.5, patience=10, verbose=1)
-path = 'C:\\nmb\\nmb_data\\h5\\pre_train\\11_mobilenet_rmsprop_false_img.h5'
+path = 'C:\\nmb\\nmb_data\\h5\\pre_train\\11_mobilenet_rmsprop_false_True.h5'
 mc = ModelCheckpoint(path, monitor='val_loss', verbose=1, save_best_only=True)
 tb = TensorBoard(log_dir='C:/nmb/nmb_data/graph/'+ '11_mobilenet_rmsprop_false_img' + "/",histogram_freq=0, write_graph=True, write_images=True)
 model.compile(optimizer=op, loss="sparse_categorical_crossentropy", metrics=['acc'])
