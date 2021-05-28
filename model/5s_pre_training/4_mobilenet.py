@@ -97,6 +97,7 @@ print("43개 남성 목소리 중 "+str(count_m)+"개 정답")
 end = datetime.now()
 time = end - start_now
 print("작업 시간 : ", time)
+
 # loss : 0.11121
 # acc : 0.97797
 # 43개 여성 목소리 중 41개 정답
