@@ -39,21 +39,21 @@ model = MobileNet(
     input_shape=(128,862,1),
     classes=2,
     pooling=None,
-    weights=None,
+    weights='imagenet',
 )
-model.trainable = False
+# model.trainable = False
 model.summary()
 
-model.save('C:\\nmb\\nmb_data\\h5\\pre_train\\11_mobilenet_rmsprop_false.h5')
+model.save('C:\\nmb\\nmb_data\\h5\\pre_train\\11_mobilenet_rmsprop_false_img.h5')
 
 # 컴파일, 훈련
 op = RMSprop(lr=1e-3)
 batch_size = 8
 es = EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True, verbose=1)
 lr = ReduceLROnPlateau(monitor='val_loss', vactor=0.5, patience=10, verbose=1)
-path = 'C:\\nmb\\nmb_data\\h5\\pre_train\\11_mobilenet_rmsprop_false.h5'
+path = 'C:\\nmb\\nmb_data\\h5\\pre_train\\11_mobilenet_rmsprop_false_img.h5'
 mc = ModelCheckpoint(path, monitor='val_loss', verbose=1, save_best_only=True)
-tb = TensorBoard(log_dir='C:/nmb/nmb_data/graph/'+ '11_mobilenet_rmsprop_false' + "/",histogram_freq=0, write_graph=True, write_images=True)
+tb = TensorBoard(log_dir='C:/nmb/nmb_data/graph/'+ '11_mobilenet_rmsprop_false_img' + "/",histogram_freq=0, write_graph=True, write_images=True)
 model.compile(optimizer=op, loss="sparse_categorical_crossentropy", metrics=['acc'])
 history = model.fit(x_train, y_train, epochs=1000, batch_size=batch_size, validation_split=0.2, callbacks=[es, lr, mc, tb])
 
@@ -68,7 +68,7 @@ plt.ylabel('loss')
 plt.show()
 
 # 평가, 예측
-model = load_model('C:\\nmb\\nmb_data\\h5\\pre_train\\11_mobilenet_rmsprop_false.h5')
+model = load_model('C:\\nmb\\nmb_data\\h5\\pre_train\\11_mobilenet_rmsprop_false_img.h5')
 # model.load_weights('C:/nmb/nmb_data/h5/5s/mobilenet/mobilenet_rmsprop_1.h5')
 result = model.evaluate(x_test, y_test, batch_size=8)
 print("loss : {:.5f}".format(result[0]))
@@ -319,3 +319,9 @@ _________________________________________________________________
 # 43개 여성 목소리 중 43개 정답
 # 43개 남성 목소리 중 0개 정답
 # 작업 시간 :  0:01:35.931280
+
+# weight='imagenet'
+# If using `weights` as `"imagenet"` with `include_top` as true, `classes` should be 1000
+
+# include_top = False
+# ValueError: The input must have 3 channels; got `input_shape=(128, 862, 1)`
