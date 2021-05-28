@@ -57,6 +57,8 @@ tb = TensorBoard(log_dir='C:/nmb/nmb_data/graph/'+ '11_mobilenet_rmsprop_false' 
 model.compile(optimizer=op, loss="sparse_categorical_crossentropy", metrics=['acc'])
 history = model.fit(x_train, y_train, epochs=1000, batch_size=batch_size, validation_split=0.2, callbacks=[es, lr, mc, tb])
 
+print('\nhistory dict:', history.history)
+
 plt.plot(history.epoch, history.history['loss'], '-o', label='training_loss')
 plt.plot(history.epoch, history.history['val_loss'], '-o', label='validation_loss')
 plt.legend()
@@ -115,6 +117,8 @@ print("작업 시간 : ", time)
 # 43개 여성 목소리 중 41개 정답
 # 43개 남성 목소리 중 42개 정답
 # 작업 시간 :  0:25:27.264733
+
+#------------------------------------------------------------------------------------
 
 # trainable = False, weight = none
 '''
