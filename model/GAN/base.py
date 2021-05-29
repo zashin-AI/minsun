@@ -100,3 +100,34 @@ def gan_train(epoch, batch_size, saving_interval):
               fig.savefig("gan_images/gan_mnist_%d.png" % i)
 
 gan_train(4001, 32, 200)  #4000번 반복되고(+1을 해 주는 것에 주의), 배치 사이즈는 32,  200번 마다 결과가 저장되게 하였습니다.
+
+'''
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #
+=================================================================
+input_1 (InputLayer)         [(None, 100)]             0
+_________________________________________________________________
+sequential (Sequential)      (None, 28, 28, 1)         865281
+_________________________________________________________________
+sequential_1 (Sequential)    (None, 1)                 212865
+=================================================================
+Total params: 1,078,146
+Trainable params: 852,609
+Non-trainable params: 225,537
+_________________________________________________________________
+'''
+
+'''
+epoch:3989  d_loss:0.4146  g_loss:2.2068
+epoch:3990  d_loss:0.6163  g_loss:2.0647
+epoch:3991  d_loss:0.4351  g_loss:1.4397
+epoch:3992  d_loss:0.4667  g_loss:1.5868
+epoch:3993  d_loss:0.5058  g_loss:1.3858
+epoch:3994  d_loss:0.5650  g_loss:1.5064
+epoch:3995  d_loss:0.5048  g_loss:1.4074
+epoch:3996  d_loss:0.5790  g_loss:1.6322
+epoch:3997  d_loss:0.4130  g_loss:1.3663
+epoch:3998  d_loss:0.4661  g_loss:1.7602
+epoch:3999  d_loss:0.4268  g_loss:1.8738
+epoch:4000  d_loss:0.4955  g_loss:1.4937
+'''
