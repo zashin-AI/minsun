@@ -36,7 +36,7 @@ x_train, x_test, y_train, y_test = train_test_split(
 
 # model
 model = CatBoostClassifier(
-    learning_rate=0.1,
+    # learning_rate=0.1,
     iterations=500,
     task_type="GPU"
     # # bad allocation 떠서 넣는 옵션q
