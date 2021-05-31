@@ -22,5 +22,8 @@ if gpus:
 
 r = sr.Recognizer()
 
-def 
+def normalized_sound(audio_file):
+    audio = AudioSegment.from_wav(audio_file)
+    normalizedsound = effects.normalize(audio)
+    return normalizedsound
     
