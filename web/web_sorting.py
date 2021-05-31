@@ -208,5 +208,5 @@ def read_male():
     return "</br>".join(f.readlines())
 
 if __name__ == '__main__':
-    model = load_model('c:/nmb/nmb_data/cp/mobilenet_rmsprop_1.h5')
+    model = load_model('c:/nmb/nmb_data/h5/mobilenet_rmsprop_1.h5')
     app.run(debug=True) # debug = False 인 경우 문제가 생겼을 경우 제대로 된 확인을 하기 어려움
