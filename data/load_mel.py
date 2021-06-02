@@ -9,12 +9,10 @@ import librosa.display
 import gzip
 import os
 
-
-
 dataset = []
 label = []
-pathAudio_F = 'C:\\nmb\\nmb_data\\brandnew_data\\F\\'
-pathAudio_M = 'C:\\nmb\\nmb_data\\brandnew_data\\M\\'
+pathAudio_F = 'C:\\nmb\\nmb_data\\audio_data\\10s2m\\f\\'
+pathAudio_M = 'C:\\nmb\\nmb_data\\audio_data\\10s2m\\m\\'
 
 files_F = librosa.util.find_files(pathAudio_F, ext=['flac','wav'])
 files_M = librosa.util.find_files(pathAudio_M, ext=['flac','wav'])
@@ -33,9 +31,9 @@ for folder in total :
     dataset = []
     label = []
     for file in folder:
-        y, sr = librosa.load(file, sr=22050, duration=1.0)
+        y, sr = librosa.load(file, sr=22050, duration=10.0)
         length = (len(y) / sr)
-        if length < 5.0 : pass
+        if length < 10.0 : pass
         else:
             mels = librosa.feature.melspectrogram(y, sr=sr, n_fft=512, hop_length=128)
             mels = librosa.amplitude_to_db(mels, ref=np.max)
@@ -53,9 +51,9 @@ for folder in total :
     print(dataset.shape)    
     print(label.shape)      
 
-    np.save(f'C:\\nmb\\nmb_data\\npy\\brandnew_{index}_mels.npy', arr=dataset)
+    np.save(f'C:\\nmb\\nmb_data\\npy\\open_slr_{index}_mels.npy', arr=dataset)
     print("dataset save")
-    np.save(f'C:\\nmb\\nmb_data\\npy\\brandnew_{index}_mels_label.npy', arr=label)
+    np.save(f'C:\\nmb\\nmb_data\\npy\\open_slr_{index}_mels_label.npy', arr=label)
     print("label save")
 
     index += 1 
@@ -76,7 +74,20 @@ print('=====save done=====')
 
 # ------------------------------------------------------
 
-F = np.load('C:\\nmb\\nmb_data\\npy\\brandnew_0_mels.npy')
+F = np.load('C:\\nmb\\nmb_data\\npy\\open_slr_0_mels.npy')
 print(F.shape)  # (1104, 128, 862)
-M = np.load('C:\\nmb\\nmb_data\\npy\\brandnew_1_mels.npy')
+M = np.load('C:\\nmb\\nmb_data\\npy\\open_slr_1_mels.npy')
 print(M.shape)  # (1037, 128, 862)
+
+
+
+# 10s2m 
+# (528,)
+# (480,)
+# ====0=====
+# (528, 128, 1723)
+# (528,)
+# (480, 128, 1723)
+# (480,)
+# dataset save
+# label save

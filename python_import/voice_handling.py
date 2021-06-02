@@ -92,7 +92,7 @@ def voice_split(origin_dir, threshold, out_dir):
 
 
 
-# 5초씩 12개 총 1분으로 자르기 위해 end_thresholdf를 만든 함수
+# 5초씩 12개 총 1분으로 자르기 위해 end_threshold를 만든 함수
 def voice_split_m(origin_dir, threshold, end_threshold, out_dir):
     audio = AudioSegment.from_file(origin_dir)
     _, w_id = os.path.split(origin_dir)

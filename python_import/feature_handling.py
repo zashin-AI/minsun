@@ -91,9 +91,9 @@ def load_data_mel(filepath, filename, labels):
     files = librosa.util.find_files(filepath, ext=[filename])
     files = np.asarray(files)
     for file in files:
-        y, sr = librosa.load(file, sr=22050, duration=1.0)
+        y, sr = librosa.load(file, sr=22050, duration=10.0)
         length = (len(y) / sr)
-        if length < 1.0 : pass
+        if length < 10.0 : pass
         else:
             mels = librosa.feature.melspectrogram(y, sr=sr, n_fft=512, hop_length=128)
             mels = librosa.amplitude_to_db(mels, ref=np.max)

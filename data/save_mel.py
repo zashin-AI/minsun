@@ -8,16 +8,16 @@ from feature_handling import load_data_mel, load_data_denoise_mel
 # filename = 파일 확장자명 (wav, flac...)
 # labels = 라벨링 (여자 0, 남자 1)
 
-# filepath = 'c:/nmb/nmb_data/audio_data/F/'
-# filename = 'wav'
-# labels = 0
-
-# data, label = load_data_mel(filepath, filename, labels)
-
-
-# DENOISE 파일
-filepath = 'c:/nmb/nmb_data/audio_data_denoise/M_denoise/'
+filepath = 'C:\\nmb\\nmb_data\\audio_data\\10s2m\\f\\'
 filename = 'wav'
-labels = 1
+labels = 0
 
-data, label = load_data_denoise_mel(filepath, filename, labels)
+data, label = load_data_mel(filepath, filename, labels)
+
+
+# # DENOISE 파일
+# filepath = 'c:/nmb/nmb_data/audio_data_denoise/M_denoise/'
+# filename = 'wav'
+# labels = 1
+
+# data, label = load_data_denoise_mel(filepath, filename, labels)
