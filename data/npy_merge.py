@@ -1,31 +1,31 @@
 import numpy as np
 
-dir = 'C:/nmb/nmb_data/0418_balance_denoise_npy/'
+dir = 'D:/nmb/0602_10s/'
 npy = '.npy'
 
 # 데이터 불러오기 female
-f1 = np.load(dir + 'korea_corpus_f_2m_denoise_mels' + npy)
-f2 = np.load(dir + 'mindslab_f_2m_denoise_mels' + npy)
-f3 = np.load(dir + 'open_slr_f_2m_denoise_mels' + npy)
-f4 = np.load(dir + 'pansori_f_2m_denoise_mels' + npy)
+f1 = np.load(dir + 'koreacorpus_2m10s_f_mel_data' + npy)
+f2 = np.load(dir + 'mindslab_2m10s_f_mel_data' + npy)
+f3 = np.load(dir + 'open_slr_f_data' + npy)
+f4 = np.load(dir + 'pansori_2m10s_f_mel_data' + npy)
 
 # 데이터 불러오기 male
-m1 = np.load(dir + 'korea_corpus_m_2m_denoise_mels' + npy)
-m2 = np.load(dir + 'mindslab_m_2m_denoise_mels' + npy)
-m3 = np.load(dir + 'open_slr_m_2m_denoise_mels' + npy)
-m4 = np.load(dir + 'pansori_m_2m_denoise_mels' + npy)
+m1 = np.load(dir + 'koreacorpus_2m10s_m_mel_data' + npy)
+m2 = np.load(dir + 'mindslab_2m10s_m_mel_data' + npy)
+m3 = np.load(dir + 'open_slr_m_data' + npy)
+m4 = np.load(dir + 'pansori_2m10s_m_mel_data' + npy)
 
 # 라벨 불러오기 female
-fl1 = np.load(dir + 'korea_corpus_f_2m_denoise_label_mels' + npy)
-fl2 = np.load(dir + 'mindslab_f_2m_denoise_label_mels' + npy)
-fl3 = np.load(dir + 'open_slr_f_2m_denoise_label_mels' + npy)
-fl4 = np.load(dir + 'pansori_f_2m_denoise_label_mels' + npy)
+fl1 = np.load(dir + 'koreacorpus_2m10s_f_mel_label' + npy)
+fl2 = np.load(dir + 'mindslab_2m10s_f_mel_label' + npy)
+fl3 = np.load(dir + 'open_slr_f_label' + npy)
+fl4 = np.load(dir + 'pansori_2m10s_f_mel_label' + npy)
 
 # 라벨 불러오기 male
-ml1 = np.load(dir + 'korea_corpus_m_2m_denoise_label_mels' + npy)
-ml2 = np.load(dir + 'mindslab_m_2m_denoise_label_mels' + npy)
-ml3 = np.load(dir + 'open_slr_m_2m_denoise_label_mels' + npy)
-ml4 = np.load(dir + 'pansori_m_2m_denoise_label_mels' + npy)
+ml1 = np.load(dir + 'koreacorpus_2m10s_m_mel_label' + npy)
+ml2 = np.load(dir + 'mindslab_2m10s_m_mel_label' + npy)
+ml3 = np.load(dir + 'open_slr_m_label' + npy)
+ml4 = np.load(dir + 'pansori_2m10s_m_mel_label' + npy)
 
 # 합치기 female
 female = np.concatenate([f1, f2, f3, f4], 0)
@@ -43,11 +43,11 @@ print(np.unique(m_label))
 
 
 # 내보내기 female
-np.save('C:/nmb/nmb_data/0418_balance_denoise_npy/denoise_balance_f_mels.npy', arr=female)
-np.save('C:/nmb/nmb_data/0418_balance_denoise_npy/denoise_balance_f_label_mels.npy', arr=f_label)
+np.save('D:/nmb/0602_10s/total_10s/10s_f_mels.npy', arr=female)
+np.save('D:/nmb/0602_10s/total_10s/10s_f_mels_label.npy', arr=f_label)
 print('=====save done(f)=====')
 
 # 내보내기 male
-np.save('C:/nmb/nmb_data/0418_balance_denoise_npy/denoise_balance_m_mels.npy', arr=male)
-np.save('C:/nmb/nmb_data/0418_balance_denoise_npy/denoise_balance_m_label_mels.npy', arr=m_label)
+np.save('D:/nmb/0602_10s/total_10s/10s_m_mels.npy', arr=male)
+np.save('D:/nmb/0602_10s/total_10s/10s_m_mels_label.npy', arr=m_label)
 print('=====save done(m)=====')
