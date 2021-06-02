@@ -28,14 +28,14 @@ voice_split_m(origin_dir=origin_dir, threshold=threshold, end_threshold =end_thr
 '''
 
 # 여러 파일 for 문 사용
-audio_dir = 'C:\\nmb\\nmb_data\\10s2m\\open_slr_m_silence_sum_2m\\'
+audio_dir = 'C:\\nmb\\nmb_data\\10s2m\\open_slr_f_silence_sum_2m\\'
 infiles = librosa.util.find_files(audio_dir)
 
 count = 0
 for file in infiles:
     origin_dir = infiles[count]
     threshold = 10000 # 몇초씩 자를 것인지 설정
-    out_dir = 'C:\\nmb\\nmb_data\\audio_data\\10s2m\\m\\'
+    out_dir = 'C:\\nmb\\nmb_data\\audio_data\\10s2m\\f\\'
     end_threshold = (60*2)*1000 # 끝나는 지점
     voice_split_m(origin_dir=origin_dir, threshold=threshold, end_threshold =end_threshold,out_dir=out_dir)
     count += 1
