@@ -41,7 +41,7 @@ def split_slience(audio_file):
     audio_chunks = split_on_silence(
         audio_file,
         min_silence_len=1000,
-        silence_thresh=dbfs - 30,
+        silence_thresh=dbfs - 16,
         keep_silence=True
     )
     return audio_chunks
@@ -209,4 +209,11 @@ def read_male():
 
 if __name__ == '__main__':
     model = load_model('c:/nmb/nmb_data/h5/mobilenet_rmsprop_1.h5')
-    app.run(debug=True) # debug = False 인 경우 문제가 생겼을 경우 제대로 된 확인을 하기 어려움
+    app.run(debug=True) 
+    
+    
+    
+    
+    
+    
+    # debug = False 인 경우 문제가 생겼을 경우 제대로 된 확인을 하기 어려움
